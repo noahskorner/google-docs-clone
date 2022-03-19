@@ -1,0 +1,76 @@
+/* Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inter Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --font-primary: 'Inter', sans-serif;
+  --bg-b-primary: theme('colors.slate.900');
+}
+
+/* Fonts */
+.font-primary {
+  font-family: var(--font-primary);
+}
+
+/* Utils */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+*:focus {
+  outline: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  height: 0;
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+/* Tailwind Classes */
+@layer components {
+  /* Text */
+  .text-primary {
+    @apply text-gray-700 dark:text-slate-200;
+  }
+
+  /* Backgrounds */
+  .bg-primary {
+    @apply bg-white dark:bg-slate-900;
+  }
+
+  /* Buttons */
+  .btn-icon {
+    @apply w-8 h-8 border rounded-md border-primary flex justify-center items-center hover:bg-slate-100 dark:hover:bg-slate-800;
+  }
+
+  /* Borders */
+  .border-primary {
+    @apply border-slate-900/10 dark:border-slate-300/10;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    @apply w-full lg:max-w-xs bg-primary border-primary border-r fixed top-0 left-0 z-30;
+    max-width: min(50%, 20rem);
+  }
+
+  .sidebar-btn {
+    @apply w-full px-4 py-1 flex justify-between items-center text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded;
+  }
+}

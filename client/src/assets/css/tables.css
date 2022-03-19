@@ -1,0 +1,17 @@
+/* Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  table,
+  th,
+  td {
+    @apply border;
+  }
+
+  td,
+  th {
+    @apply p-2;
+  }
+}
