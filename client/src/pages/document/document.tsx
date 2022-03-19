@@ -1,12 +1,12 @@
 import { Fragment, useRef, useState } from 'react';
-import Header from '../../components/organisms/header';
+import DocumentHeader from '../../components/organisms/document-header';
 import useWindowSize from '../../hooks/useWindowSize';
 import { Editor, EditorState } from 'draft-js';
 
 const Document = () => {
   const { heightStr } = useWindowSize();
-  const headerRef = useRef<null | HTMLDivElement>(null);
-  const documentViewerHeight = `calc(${heightStr} - ${headerRef.current?.clientHeight}px)`;
+  const documentHeaderRef = useRef<null | HTMLDivElement>(null);
+  const documentViewerHeight = `calc(${heightStr} - ${documentHeaderRef.current?.clientHeight}px)`;
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const editorRef = useRef<null | Editor>(null);
 
@@ -20,7 +20,7 @@ const Document = () => {
         style={{ height: heightStr }}
         className="w-full h-full bg-gray-100 flex flex-col"
       >
-        <Header headerRef={headerRef} />
+        <DocumentHeader documentHeaderRef={documentHeaderRef} />
         <div
           style={{
             height: documentViewerHeight,

@@ -1,15 +1,6 @@
-import { MutableRefObject } from 'react';
-
-interface HeaderProps {
-  headerRef: MutableRefObject<null | HTMLDivElement>;
-}
-
-const Header = ({ headerRef }: HeaderProps) => {
+const DocumentMenuBar = () => {
   return (
-    <div
-      ref={headerRef}
-      className="border-b w-full bg-white py-1 px-3 flex justify-between items-center"
-    >
+    <div className="w-full flex justify-between items-center px-3 py-1 border-b">
       {/* Left */}
       <div className="flex justify-center items-center">
         <button className="flex justify-center items-center w-14 h-14 hover:bg-gray-100 rounded-full">
@@ -85,4 +76,4 @@ const Header = ({ headerRef }: HeaderProps) => {
   );
 };
 
-export default Header;
+export default DocumentMenuBar;
