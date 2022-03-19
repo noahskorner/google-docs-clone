@@ -4,7 +4,7 @@ import useWindowSize from '../../hooks/useWindowSize';
 import {
   Editor,
   EditorState,
-  ContentState,
+  RawDraftContentState,
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
@@ -22,23 +22,40 @@ const Document = () => {
     editorRef?.current?.focus();
   };
 
+  // send-changes
   const handleEditorChange = (editorState: EditorState) => {
     setEditorState(editorState);
-    socket?.emit('update', convertToRaw(editorState.getCurrentContent()));
+    socket?.emit('send-changes', convertToRaw(editorState.getCurrentContent()));
   };
 
+  // connect
   useEffect(() => {
     setSocket(io('http://localhost:3001'));
 
     socket?.connect();
 
-    socket?.on('update', (rawDraftContentState) => {
+    return () => {
+      socket?.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // receive-changes
+  useEffect(() => {
+    if (socket == null) return;
+
+    const handler = (rawDraftContentState: RawDraftContentState) => {
       const contentState = convertFromRaw(rawDraftContentState);
       const newEditorState = EditorState.createWithContent(contentState);
       setEditorState(newEditorState);
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    };
+
+    socket.on('receive-changes', handler);
+
+    return () => {
+      socket.off('receive-changes', handler);
+    };
+  }, [socket, editorState]);
 
   return (
     <Fragment>
