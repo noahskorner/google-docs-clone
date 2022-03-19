@@ -1,8 +1,8 @@
 const DocumentMenuBar = () => {
   return (
-    <div className="w-full flex justify-between items-center px-3 py-1 border-b">
+    <div className="w-full flex justify-between items-center px-3 py-1 border-b overflow-hidden">
       {/* Left */}
-      <div className="flex justify-center items-center">
+      <div className="w-full flex justify-start items-center overflow-x-scroll scrollbar-hidden">
         <button className="flex justify-center items-center w-14 h-14 hover:bg-gray-100 rounded-full">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -24,35 +24,35 @@ const DocumentMenuBar = () => {
             Untitled Document
           </h1>
           <div className="flex">
-            <button className="text-sm px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
+            <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               File
             </button>
-            <button className="text-sm px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
+            <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               Edit
             </button>
-            <button className="text-sm px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
+            <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               View
             </button>
-            <button className="text-sm px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
+            <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               Insert
             </button>
-            <button className="text-sm px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
+            <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               Format
             </button>
-            <button className="text-sm px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
+            <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               Tools
             </button>
-            <button className="text-sm px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
+            <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               Add-ons
             </button>
-            <button className="text-sm px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
+            <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               Help
             </button>
           </div>
         </div>
       </div>
       {/* Right */}
-      <div className="space-x-4 flex items-center">
+      <div className="space-x-4 flex items-center flex-shrink-0 pl-3">
         <button className="bg-blue-600 text-white text-sm font-semibold px-3 py-2 rounded hover:bg-blue-500 flex justify-center items-center space-x-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"

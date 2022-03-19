@@ -25,9 +25,9 @@ const Document = () => {
           style={{
             height: documentViewerHeight,
           }}
-          className="w-full flex flex-col justify-start items-center overflow-y-hidden"
+          className="w-full flex flex-col justify-start items-center overflow-hidden"
         >
-          <div className="h-full w-full overflow-y-scroll space-y-4 flex flex-col items-center p-4">
+          <div className="h-full w-full overflow-auto space-y-4 flex flex-col items-center p-4">
             <div
               style={{ height: '1100px', width: '850px' }}
               className="bg-white shadow-md flex-shrink-0 cursor-text p-12"

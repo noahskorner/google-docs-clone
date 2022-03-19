@@ -10,7 +10,7 @@ const DocumentHeader = ({ documentHeaderRef }: DocumentHeaderProps) => {
   return (
     <div
       ref={documentHeaderRef}
-      className="border-b w-full bg-white flex flex-col"
+      className="border-b w-full bg-white flex flex-col overflow-hidden"
     >
       <DocumentMenuBar />
       <EditorToolbar />
