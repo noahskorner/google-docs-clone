@@ -1,7 +1,14 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import DocumentHeader from '../../components/organisms/document-header';
 import useWindowSize from '../../hooks/useWindowSize';
-import { Editor, EditorState } from 'draft-js';
+import {
+  Editor,
+  EditorState,
+  ContentState,
+  convertToRaw,
+  convertFromRaw,
+} from 'draft-js';
+import io, { Socket } from 'socket.io-client';
 
 const Document = () => {
   const { heightStr } = useWindowSize();
@@ -9,10 +16,29 @@ const Document = () => {
   const documentViewerHeight = `calc(${heightStr} - ${documentHeaderRef.current?.clientHeight}px)`;
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const editorRef = useRef<null | Editor>(null);
+  const [socket, setSocket] = useState<null | Socket>(null);
 
   const focusEditor = () => {
     editorRef?.current?.focus();
   };
+
+  const handleEditorChange = (editorState: EditorState) => {
+    setEditorState(editorState);
+    socket?.emit('update', convertToRaw(editorState.getCurrentContent()));
+  };
+
+  useEffect(() => {
+    setSocket(io('http://localhost:3001'));
+
+    socket?.connect();
+
+    socket?.on('update', (rawDraftContentState) => {
+      const contentState = convertFromRaw(rawDraftContentState);
+      const newEditorState = EditorState.createWithContent(contentState);
+      setEditorState(newEditorState);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Fragment>
@@ -36,7 +62,7 @@ const Document = () => {
               <Editor
                 ref={editorRef}
                 editorState={editorState}
-                onChange={(editorState) => setEditorState(editorState)}
+                onChange={handleEditorChange}
               />
             </div>
           </div>
