@@ -1,6 +1,5 @@
 import useWindowSize from '../../hooks/useWindowSize';
 import TextField from '../../components/atoms/text-field/text-field';
-import Button from '../../components/atoms/button';
 import { useContext, useState } from 'react';
 import { ToastManagerContext } from '../../contexts/toast-context';
 
@@ -23,14 +22,20 @@ const Login = () => {
     >
       <div className="w-full max-w-sm bg-white dark:bg-slate-800 rounded-md border-primary shadow-md border dark:border-0 dark:shadow-xl p-6">
         <div className="grid grid-cols-1 gap-y-4">
-          <TextField value={email} label="Email" color="secondary" />
+          <TextField
+            value={email}
+            onInput={setEmail}
+            label="Email"
+            color="secondary"
+          />
           <TextField
             value={password}
+            onInput={setPassword}
             label="Password"
             type="password"
             color="secondary"
           />
-          <Button onClick={handleLoginBtnClick} children={'Login'} />
+          <button onClick={handleLoginBtnClick}>Login</button>
         </div>
       </div>
       <div className="flex justify-center space-x-4 text-sm p-4">

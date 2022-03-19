@@ -12,6 +12,7 @@
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "axios": "^0.26.0",
+    "draft-js": "^0.11.7",
     "inputmask": "^5.0.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -48,6 +49,7 @@
     ]
   },
   "devDependencies": {
+    "@types/draft-js": "^0.11.9",
     "@types/inputmask": "^5.0.2",
     "@types/react-transition-group": "^4.4.4",
     "@types/uuid": "^8.3.4",
