@@ -54,7 +54,7 @@ const TextField = ({
             : ''
         } ${
           TEXT_FIELD_CLASSES[color]
-        } w-full border shadow-sm  rounded-md flex justify-center items-center border-primary`}
+        } w-full border shadow-sm  rounded flex justify-center items-center border-primary`}
       >
         {/* Leading Icon */}
         <div className="pl-2 text-slate-400">{icon}</div>
@@ -68,7 +68,7 @@ const TextField = ({
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               value={value}
-              className={`${TEXT_FIELD_CLASSES[color]} w-full p-2 rounded-md`}
+              className={`${TEXT_FIELD_CLASSES[color]} w-full p-2 rounded`}
               placeholder={placeholder && placeholder}
             />
             {type === 'password' && (
@@ -93,7 +93,7 @@ const TextField = ({
             onBlur={() => setIsFocused(false)}
             placeholder={placeholder && placeholder}
             value={value}
-            className="w-full p-2 bg-white dark:bg-slate-800 rounded-md"
+            className="w-full p-2 bg-white dark:bg-slate-800 rounded"
           ></textarea>
         )}
         {/* Trailing Icon */}
