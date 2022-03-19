@@ -1,10 +1,15 @@
+import { useRef, useState } from 'react';
 import Logo from '../../atoms/logo';
+import { CSSTransition } from 'react-transition-group';
 
 const DocumentMenuBar = () => {
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
+  const dropdownRef = useRef(null);
+
   return (
-    <div className="w-full flex justify-between items-center px-3 pb-1 border-b overflow-hidden">
+    <div className="w-full flex justify-between items-center px-3 pb-1 border-b">
       {/* Left */}
-      <div className="w-full flex justify-start items-center overflow-x-scroll scrollbar-hidden">
+      <div className="w-full flex justify-start items-center scrollbar-hidden">
         <button className="flex justify-center items-center w-14 h-14 hover:bg-gray-100 rounded-full">
           <Logo />
         </button>
@@ -13,9 +18,43 @@ const DocumentMenuBar = () => {
             Untitled Document
           </h1>
           <div className="flex">
-            <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
-              File
-            </button>
+            <div className="relative" onBlur={() => setShowDropdown(false)}>
+              <button
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md"
+              >
+                File
+              </button>
+              <CSSTransition
+                nodeRef={dropdownRef}
+                in={showDropdown}
+                timeout={200}
+                classNames="fade-in"
+                unmountOnExit
+                children={
+                  <div
+                    ref={dropdownRef}
+                    className="absolute top-full left-0 z-10 w-52 bg-white py-2 rounded-sm shadow-lg border"
+                  >
+                    <button className="w-full text-black hover:bg-gray-100 text-sm px-6 py-2 text-left">
+                      Click
+                    </button>
+                    <button className="w-full text-black hover:bg-gray-100 text-sm px-6 py-2 text-left">
+                      Click
+                    </button>
+                    <button className="w-full text-black hover:bg-gray-100 text-sm px-6 py-2 text-left">
+                      Click
+                    </button>
+                    <button className="w-full text-black hover:bg-gray-100 text-sm px-6 py-2 text-left">
+                      Click
+                    </button>
+                    <button className="w-full text-black hover:bg-gray-100 text-sm px-6 py-2 text-left">
+                      Click
+                    </button>
+                  </div>
+                }
+              />
+            </div>
             <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               Edit
             </button>
