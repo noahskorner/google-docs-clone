@@ -9,6 +9,7 @@ import {
   convertFromRaw,
 } from 'draft-js';
 import io, { Socket } from 'socket.io-client';
+import { BASE_URL } from '../../services/api';
 
 const Document = () => {
   const { heightStr } = useWindowSize();
@@ -30,7 +31,7 @@ const Document = () => {
 
   // connect
   useEffect(() => {
-    setSocket(io('http://localhost:3001'));
+    setSocket(io(BASE_URL));
 
     socket?.connect();
 
