@@ -8,7 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { RoleEnum } from '../../types/enums';
 import { User } from './user.model';
-import { UserRole } from './userRole';
+import { UserRole } from './user-role.model';
 
 @Table({ tableName: 'role', underscored: true, timestamps: false })
 class Role extends Model {

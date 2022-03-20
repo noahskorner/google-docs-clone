@@ -2,7 +2,7 @@ import { genSalt, hash, compare } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../db/models/user.model';
 import { mailService } from './mail.service';
-import { RefreshToken } from '../db/models/refreshToken.model';
+import { RefreshToken } from '../db/models/refresh-token.model';
 import env from '../config/env.config';
 
 class UserService {

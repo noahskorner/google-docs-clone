@@ -7,9 +7,9 @@ import {
   BelongsToMany,
   DefaultScope,
 } from 'sequelize-typescript';
-import { RefreshToken } from './refreshToken.model';
+import { RefreshToken } from './refresh-token.model';
 import { Role } from './role.model';
-import { UserRole } from './userRole';
+import { UserRole } from './user-role.model';
 
 @DefaultScope(() => ({
   include: [

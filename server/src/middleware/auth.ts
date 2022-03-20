@@ -1,7 +1,7 @@
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import env from '../config/env.config';
-import { UserRole } from '../db/models/userRole';
+import { UserRole } from '../db/models/user-role.model';
 import { Role } from '../db/models/role.model';
 import { RoleEnum } from '../types/enums';
 

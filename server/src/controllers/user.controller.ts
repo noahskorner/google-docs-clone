@@ -1,6 +1,6 @@
 import { validationResult } from 'express-validator';
 import { userService } from '../services/user.service';
-import catchAsync from '../middleware/catchAsync';
+import catchAsync from '../middleware/catch-async';
 import { Request, Response } from 'express';
 import { resetPassword } from '../responses';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
