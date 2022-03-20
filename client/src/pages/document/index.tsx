@@ -10,6 +10,7 @@ import {
 } from 'draft-js';
 import io, { Socket } from 'socket.io-client';
 import { BASE_URL } from '../../services/api';
+import { useParams } from 'react-router-dom';
 
 const Document = () => {
   const { heightStr } = useWindowSize();
@@ -18,6 +19,8 @@ const Document = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const editorRef = useRef<null | Editor>(null);
   const [socket, setSocket] = useState<null | Socket>(null);
+  const params = useParams();
+  console.log(params.id);
 
   const focusEditor = () => {
     editorRef?.current?.focus();

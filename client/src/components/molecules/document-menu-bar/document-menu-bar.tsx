@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import Logo from '../../atoms/logo';
 import { CSSTransition } from 'react-transition-group';
+import UserDropdown from '../../atoms/user-dropdown';
 
 const DocumentMenuBar = () => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
@@ -10,9 +11,7 @@ const DocumentMenuBar = () => {
     <div className="w-full flex justify-between items-center px-3 pb-1 border-b">
       {/* Left */}
       <div className="w-full flex justify-start items-center scrollbar-hidden">
-        <button className="flex justify-center items-center w-14 h-14 hover:bg-gray-100 rounded-full">
-          <Logo />
-        </button>
+        <Logo />
         <div className="flex flex-col">
           <h1 className="text-gray-500 font-medium text-lg px-2 pt-2">
             Untitled Document
@@ -96,9 +95,7 @@ const DocumentMenuBar = () => {
           </svg>
           <span>Share</span>
         </button>
-        <button className="w-8 h-8 bg-green-800 text-white font-semibold flex justify-center items-center rounded-full hover:ring-2">
-          N
-        </button>
+        <UserDropdown />
       </div>
     </div>
   );

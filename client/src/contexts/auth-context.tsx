@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
       return;
     }
 
+    setLoading(true);
     try {
       const response = await API.refreshToken(refreshToken);
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
@@ -62,6 +63,8 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
       setAuth(newAccessToken, newRefreshToken);
     } catch (error) {
       destroyAuth();
+    } finally {
+      setLoading(false);
     }
   };
 
