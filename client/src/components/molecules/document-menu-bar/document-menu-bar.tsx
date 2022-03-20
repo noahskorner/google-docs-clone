@@ -1,11 +1,35 @@
-import { useRef, useState } from 'react';
+import { ChangeEvent, FocusEvent, useRef, useState } from 'react';
 import Logo from '../../atoms/logo';
 import { CSSTransition } from 'react-transition-group';
 import UserDropdown from '../../atoms/user-dropdown';
+import DocumentInterface from '../../../types/document';
+import useDocument from '../../../hooks/use-document';
 
-const DocumentMenuBar = () => {
+interface DocumentMenubarProps {
+  document: null | DocumentInterface;
+  setDocumentTitle: Function;
+}
+
+const DocumentMenuBar = ({
+  document,
+  setDocumentTitle,
+}: DocumentMenubarProps) => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const dropdownRef = useRef(null);
+  const { loading, saveDocument } = useDocument();
+
+  const handleTitleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const title = event.target.value;
+    setDocumentTitle(title);
+  };
+
+  const handleTitleInputBlur = async (event: FocusEvent<HTMLInputElement>) => {
+    const title = event.target.value;
+    await saveDocument(
+      { title, ...document } as DocumentInterface,
+      (error: string | null) => {}
+    );
+  };
 
   return (
     <div className="w-full flex justify-between items-center px-3 pb-1 border-b">
@@ -13,10 +37,17 @@ const DocumentMenuBar = () => {
       <div className="w-full flex justify-start items-center scrollbar-hidden">
         <Logo />
         <div className="flex flex-col">
-          <h1 className="text-gray-500 font-medium text-lg px-2 pt-2">
-            Untitled Document
-          </h1>
-          <div className="flex">
+          <input
+            type="text"
+            onBlur={(event) => handleTitleInputBlur(event)}
+            onChange={(event) => handleTitleInputChange(event)}
+            value={document?.title ? document?.title : ''}
+            className="font-medium text-lg px-2 pt-2"
+            name=""
+            id=""
+            placeholder="Untitled Document"
+          />
+          <div className="flex items-center">
             <div className="relative" onBlur={() => setShowDropdown(false)}>
               <button
                 onClick={() => setShowDropdown(!showDropdown)}
@@ -75,6 +106,7 @@ const DocumentMenuBar = () => {
             <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               Help
             </button>
+            {loading && <p className="text-sm text-gray-500 px-2">Saving...</p>}
           </div>
         </div>
       </div>

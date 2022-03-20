@@ -4,8 +4,8 @@ class DocumentValidator {
   public update = [
     body('title')
       .optional()
-      .isLength({ min: 1, max: 25 })
-      .withMessage('Title must be between 1 and 25 characters.'),
+      .isLength({ min: 0, max: 25 })
+      .withMessage('Title must be between 0 and 25 characters.'),
     body('content')
       .optional()
       .custom((value) => {

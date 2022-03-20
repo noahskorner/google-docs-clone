@@ -1,4 +1,5 @@
 import axios from 'axios';
+import DocumentInterface from '../types/document';
 
 export const BASE_URL = 'http://localhost:3001/';
 
@@ -50,12 +51,39 @@ const createDocument = (accessToken: string) => {
   );
 };
 
-const api = {
+const getDocument = (accessToken: string, id: number) => {
+  return apiClient.get(`document/${id}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+};
+
+interface UpdateDocumentPayload {
+  id: number;
+  title?: string;
+  content?: string;
+}
+
+const updateDocument = (
+  accessToken: string,
+  { id, title, content }: UpdateDocumentPayload
+) => {
+  return apiClient.put(
+    `document/${id}`,
+    { title, content },
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+};
+
+const API = {
   login,
   register,
   refreshToken,
   logout,
   createDocument,
+  getDocument,
+  updateDocument,
 };
 
-export default api;
+export default API;

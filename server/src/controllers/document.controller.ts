@@ -42,7 +42,7 @@ class DocumentController {
     });
     if (!document) return res.sendStatus(404);
 
-    if (title) document.title = title;
+    if (title !== undefined && title !== null) document.title = title;
     if (content) document.content = content;
     document.save();
 

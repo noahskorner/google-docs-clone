@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useContext, useEffect, useRef, useState } from 'react';
 import DocumentHeader from '../../components/organisms/document-header';
 import useWindowSize from '../../hooks/use-window-size';
 import {
@@ -11,6 +11,10 @@ import {
 import io, { Socket } from 'socket.io-client';
 import { BASE_URL } from '../../services/api';
 import { useParams } from 'react-router-dom';
+import DocumentInterface from '../../types/document';
+import { ToastContext } from '../../contexts/toast-context';
+import useDocument from '../../hooks/use-document';
+import { AuthContext } from '../../contexts/auth-context';
 
 const Document = () => {
   const { heightStr } = useWindowSize();
@@ -19,10 +23,18 @@ const Document = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const editorRef = useRef<null | Editor>(null);
   const [socket, setSocket] = useState<null | Socket>(null);
-  const params = useParams();
+  const { id: documentId } = useParams();
+  const toastContext = useContext(ToastContext);
+  const { loadDocument } = useDocument();
+  const [document, setDocument] = useState<null | DocumentInterface>(null);
+  const authContext = useContext(AuthContext);
 
   const focusEditor = () => {
     editorRef?.current?.focus();
+  };
+
+  const setDocumentTitle = (title: string) => {
+    setDocument({ ...document, title } as DocumentInterface);
   };
 
   // send-changes
@@ -60,13 +72,30 @@ const Document = () => {
     };
   }, [socket, editorState]);
 
+  useEffect(() => {
+    if (!documentId) return;
+
+    loadDocument(
+      parseInt(documentId),
+      (error: null | string, document: DocumentInterface) => {
+        if (error) toastContext?.error(error);
+        else setDocument(document);
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentId, authContext?.accessToken]);
+
   return (
     <Fragment>
       <div
         style={{ height: heightStr }}
         className="w-full h-full bg-gray-100 flex flex-col"
       >
-        <DocumentHeader documentHeaderRef={documentHeaderRef} />
+        <DocumentHeader
+          document={document}
+          setDocumentTitle={setDocumentTitle}
+          documentHeaderRef={documentHeaderRef}
+        />
         <div
           style={{
             height: documentViewerHeight,

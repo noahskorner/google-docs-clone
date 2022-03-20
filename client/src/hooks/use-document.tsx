@@ -22,9 +22,48 @@ const useDocument = () => {
     }
   };
 
+  const loadDocument = async (id: number, callback: Function) => {
+    if (!authContext?.accessToken) return;
+
+    setLoading(true);
+
+    try {
+      const response = await API.getDocument(authContext?.accessToken, id);
+      const document = response.data as DocumentInterface;
+      callback(null, document);
+    } catch (error: any) {
+      callback('An unknown error has occurred. Please try again.', null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const saveDocument = async (
+    document: DocumentInterface,
+    callback: Function
+  ) => {
+    if (!authContext?.accessToken) return;
+
+    setLoading(true);
+    try {
+      await API.updateDocument(authContext?.accessToken, {
+        id: document.id,
+        title: document.title,
+        content: document.content,
+      });
+      callback(null);
+    } catch (error: any) {
+      callback('An unknown error has occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     createDocument,
+    loadDocument,
+    saveDocument,
   };
 };
 
