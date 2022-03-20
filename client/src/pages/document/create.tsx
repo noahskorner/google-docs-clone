@@ -2,15 +2,16 @@ import DocumentCreateHeader from '../../components/organisms/document-create-hea
 import useWindowSize from '../../hooks/use-window-size';
 import { PlusIcon } from '@heroicons/react/outline';
 import useDocument from '../../hooks/use-document';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ToastContext } from '../../contexts/toast-context';
 import DocumentInterface from '../../types/document';
 import Spinner from '../../components/atoms/spinner';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Create = () => {
   const { heightStr } = useWindowSize();
-  const { loading, createDocument } = useDocument();
+  const [documents, setDocuments] = useState<Array<DocumentInterface>>([]);
+  const { loading, createDocument, loadAllDocuments } = useDocument();
   const toastContext = useContext(ToastContext);
   const navigate = useNavigate();
 
@@ -23,6 +24,19 @@ const Create = () => {
       }
     });
   };
+
+  useEffect(() => {
+    loadAllDocuments(
+      (error: null | string, documents: Array<DocumentInterface>) => {
+        if (!error) {
+          setDocuments(documents);
+        } else {
+          toastContext?.error(error);
+        }
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div style={{ height: heightStr }}>
@@ -50,6 +64,15 @@ const Create = () => {
       <div className="w-full flex justify-center items-center font-medium text-gray-700 p-4">
         <div className="w-full max-w-3xl">
           <h2>Recent Documents</h2>
+          <div className="grid grid-cols-4 gap-4">
+            {documents.map((document) => {
+              return (
+                <Link to={`/document/${document.id}`}>
+                  <div className="h-64 w-full border"></div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

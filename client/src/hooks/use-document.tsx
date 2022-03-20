@@ -38,6 +38,22 @@ const useDocument = () => {
     }
   };
 
+  const loadAllDocuments = async (callback: Function) => {
+    if (!authContext?.accessToken) return;
+
+    setLoading(true);
+
+    try {
+      const response = await API.getAllDocuments(authContext?.accessToken);
+      const documents = response.data as DocumentInterface[];
+      callback(null, documents);
+    } catch (error: any) {
+      callback('An unknown error has occurred. Please try again.', null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const saveDocument = async (
     document: DocumentInterface,
     callback: Function
@@ -63,6 +79,7 @@ const useDocument = () => {
     loading,
     createDocument,
     loadDocument,
+    loadAllDocuments,
     saveDocument,
   };
 };

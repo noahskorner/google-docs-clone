@@ -4,7 +4,7 @@ import { Document } from '../db/models/document.model';
 import { validationResult } from 'express-validator';
 
 class DocumentController {
-  public read = catchAsync(async (req: Request, res: Response) => {
+  public getOne = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const document = await Document.findOne({
       where: {
@@ -16,6 +16,16 @@ class DocumentController {
     if (!document) return res.sendStatus(404);
 
     return res.status(200).json(document);
+  });
+
+  public getAll = catchAsync(async (req: Request, res: Response) => {
+    const documents = await Document.findAll({
+      where: {
+        userId: req.user?.id,
+      },
+    });
+
+    return res.status(200).json(documents);
   });
 
   public create = catchAsync(async (req: Request, res: Response) => {

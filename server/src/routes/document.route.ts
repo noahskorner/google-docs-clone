@@ -4,7 +4,8 @@ import { authenticate } from '../middleware/auth';
 import { documentValidator } from '../validators/document.validator';
 
 const router = Router();
-router.get('/:id', authenticate, documentController.read);
+router.get('/:id', authenticate, documentController.getOne);
+router.get('/', authenticate, documentController.getAll);
 router.put(
   '/:id',
   authenticate,
