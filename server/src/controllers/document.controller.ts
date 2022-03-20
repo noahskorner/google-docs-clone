@@ -58,6 +58,19 @@ class DocumentController {
 
     return res.sendStatus(200);
   });
+
+  public remove = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    await Document.destroy({
+      where: {
+        id: id,
+        userId: req.user?.id,
+      },
+    });
+
+    return res.sendStatus(200);
+  });
 }
 const documentController = new DocumentController();
 

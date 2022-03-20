@@ -75,12 +75,27 @@ const useDocument = () => {
     }
   };
 
+  const removeDocument = async (id: number, callback: Function) => {
+    if (!authContext?.accessToken) return;
+
+    setLoading(true);
+    try {
+      await API.removeDocument(authContext?.accessToken, id);
+      callback(null);
+    } catch (error: any) {
+      callback('An unknown error has occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     createDocument,
     loadDocument,
     loadAllDocuments,
     saveDocument,
+    removeDocument,
   };
 };
 

@@ -41,7 +41,7 @@ const Login = () => {
     await authContext?.login(email, password, (error: string | null) => {
       if (error === null) {
         toastContext?.success('Successfully logged in!');
-        navigate('/document');
+        navigate('/document/create');
       } else {
         toastContext?.error(error);
         setEmailErrors(['']);

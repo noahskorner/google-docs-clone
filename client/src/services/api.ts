@@ -81,6 +81,12 @@ const updateDocument = (
   );
 };
 
+const removeDocument = (accessToken: string, id: number) => {
+  return apiClient.delete(`document/${id}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+};
+
 const API = {
   login,
   register,
@@ -90,6 +96,7 @@ const API = {
   getDocument,
   getAllDocuments,
   updateDocument,
+  removeDocument,
 };
 
 export default API;

@@ -13,5 +13,6 @@ router.put(
   documentController.update
 );
 router.post('/', authenticate, documentController.create);
+router.delete('/:id', authenticate, documentController.remove);
 
 export default router;

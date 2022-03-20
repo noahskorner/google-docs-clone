@@ -21,7 +21,7 @@ interface AuthProviderInterface {
 
 export const AuthProvider = ({ children }: AuthProviderInterface) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [refreshToken, setRefreshToken] = useLocalStorage<string | null>(
     'refreshToken',
     null
@@ -36,34 +36,35 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
         response.data;
       setAuth(newAccessToken, newRefreshToken);
+      setLoading(false);
       callback(null);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const { response } = error as AxiosError;
+        setLoading(false);
         callback(response?.data?.errors?.[0].msg);
       } else {
+        setLoading(false);
         callback('An unknown error has occured. Please try again.');
       }
-    } finally {
-      setLoading(false);
     }
   };
 
   const refreshAccessToken = async () => {
     if (refreshToken === null) {
       destroyAuth();
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
     try {
       const response = await API.refreshToken(refreshToken);
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
         response.data;
       setAuth(newAccessToken, newRefreshToken);
+      setLoading(false);
     } catch (error) {
       destroyAuth();
-    } finally {
       setLoading(false);
     }
   };
