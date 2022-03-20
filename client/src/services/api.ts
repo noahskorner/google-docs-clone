@@ -30,12 +30,8 @@ const register = (payload: RegisterPayload) => {
   return apiClient.post('auth/register', payload);
 };
 
-interface RefreshTokenPayload {
-  token: String;
-}
-
-const refreshToken = (payload: RefreshTokenPayload) => {
-  return apiClient.post('auth/refresh-token', payload);
+const refreshToken = (refreshToken: string) => {
+  return apiClient.post('auth/refresh-token', { token: refreshToken });
 };
 
 const logout = (accessToken: String) => {

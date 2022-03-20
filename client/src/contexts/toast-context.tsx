@@ -9,19 +9,17 @@ interface ToastManagerInterface {
   toasts: Array<ToastInterface>;
   addToast: Function;
   removeToast: Function;
+  error: Function;
+  success: Function;
 }
 
-export const ToastManagerContext = createContext<ToastManagerInterface | null>(
-  null
-);
+export const ToastContext = createContext<ToastManagerInterface | null>(null);
 
-interface ToastManagerProviderInterface {
+interface ToastProviderInterface {
   children: JSX.Element;
 }
 
-export const ToastManagerProvider = ({
-  children,
-}: ToastManagerProviderInterface) => {
+export const ToastProvider = ({ children }: ToastProviderInterface) => {
   const [toasts, setToasts] = useState<Array<ToastInterface>>([]);
 
   const addToast = (
@@ -47,10 +45,20 @@ export const ToastManagerProvider = ({
     setToasts((toasts) => toasts.filter((toast) => toast.id !== id));
   };
 
+  const error = (title: string) => {
+    addToast({ color: 'danger', title });
+  };
+
+  const success = (title: string) => {
+    addToast({ color: 'success', title });
+  };
+
   return (
-    <ToastManagerContext.Provider value={{ toasts, addToast, removeToast }}>
+    <ToastContext.Provider
+      value={{ toasts, addToast, removeToast, error, success }}
+    >
       {children}
       <ToastManager />
-    </ToastManagerContext.Provider>
+    </ToastContext.Provider>
   );
 };

@@ -1,6 +1,6 @@
 import ToastInterface from '../../../types/toast';
 import { MouseEvent, useContext } from 'react';
-import { ToastManagerContext } from '../../../contexts/toast-context';
+import { ToastContext } from '../../../contexts/toast-context';
 
 const TOAST_CLASSES = {
   primary: 'toast-primary',
@@ -11,7 +11,7 @@ const TOAST_CLASSES = {
 };
 
 const Toast = ({ id, color, title, body, actions }: ToastInterface) => {
-  const toastContext = useContext(ToastManagerContext);
+  const toastContext = useContext(ToastContext);
 
   const handleToastClick = (e: MouseEvent<HTMLDivElement>) => {
     const classListArr = Array.from((e.target as HTMLButtonElement).classList);

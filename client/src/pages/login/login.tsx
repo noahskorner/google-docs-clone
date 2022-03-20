@@ -1,28 +1,67 @@
 import useWindowSize from '../../hooks/useWindowSize';
 import TextField from '../../components/atoms/text-field/text-field';
 import { KeyboardEvent, useContext, useState } from 'react';
-import { ToastManagerContext } from '../../contexts/toast-context';
+import { ToastContext } from '../../contexts/toast-context';
 import Logo from '../../components/atoms/logo';
-import API from '../../services/api';
+import validator from 'validator';
+import Spinner from '../../components/atoms/spinner';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../contexts/auth-context';
 
 const Login = () => {
   const { widthStr, heightStr } = useWindowSize();
   const [email, setEmail] = useState('');
+  const [emailErrors, setEmailErrors] = useState<Array<string>>([]);
   const [password, setPassword] = useState('');
-  const toastContext = useContext(ToastManagerContext);
+  const [passwordErrors, setPasswordErrors] = useState<Array<string>>([]);
+  const navigate = useNavigate();
+  const toastContext = useContext(ToastContext);
+  const authContext = useContext(AuthContext);
+
+  const validate = () => {
+    setEmailErrors([]);
+    setPasswordErrors([]);
+    let isValid = true;
+
+    if (!validator.isEmail(email)) {
+      setEmailErrors(['Must enter a valid email.']);
+      isValid = false;
+    }
+    if (!password.length) {
+      setPasswordErrors(['Must enter a password.']);
+      isValid = false;
+    }
+
+    return isValid;
+  };
 
   const login = async () => {
-    try {
-      const response = await API.login({ email, password });
+    if (!validate()) return;
 
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
+    await authContext?.login(email, password, (error: string | null) => {
+      if (error === null) {
+        toastContext?.success('Successfully logged in!');
+        navigate('/document');
+      } else {
+        toastContext?.error(error);
+        setEmailErrors(['']);
+        setPasswordErrors(['']);
+      }
+    });
   };
 
   const handleOnKeyPress = (event: KeyboardEvent) => {
     if (event.key === 'Enter') login();
+  };
+
+  const handleOnInputEmail = (value: string) => {
+    setEmailErrors([]);
+    setEmail(value);
+  };
+
+  const handleOnInputPassword = (value: string) => {
+    setPasswordErrors([]);
+    setPassword(value);
   };
 
   return (
@@ -40,16 +79,18 @@ const Login = () => {
           </div>
           <TextField
             value={email}
-            onInput={setEmail}
+            onInput={handleOnInputEmail}
             label="Email"
             color="secondary"
+            errors={emailErrors}
           />
           <TextField
             value={password}
-            onInput={setPassword}
+            onInput={handleOnInputPassword}
             label="Password"
             type="password"
             color="secondary"
+            errors={passwordErrors}
           />
           <button className="text-sm hover:underline font-semibold text-blue-500 text-left">
             Forgot Password?
@@ -58,7 +99,10 @@ const Login = () => {
             onClick={login}
             className="bg-blue-600 text-white text-sm font-semibold px-3 py-2 rounded hover:bg-blue-500 flex justify-center items-center space-x-1 active:ring-1"
           >
-            Login
+            <span className={`${authContext?.loading && 'opacity-0'}`}>
+              Login
+            </span>
+            {authContext?.loading && <Spinner size="sm" />}
           </button>
         </div>
       </div>

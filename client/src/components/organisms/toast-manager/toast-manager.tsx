@@ -1,11 +1,11 @@
 import { useContext } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { ToastManagerContext } from '../../../contexts/toast-context';
+import { ToastContext } from '../../../contexts/toast-context';
 import useWindowSize from '../../../hooks/useWindowSize';
 import Toast from '../../atoms/toast';
 
 const ToastManager = () => {
-  const toastContext = useContext(ToastManagerContext);
+  const toastContext = useContext(ToastContext);
   const { heightStr } = useWindowSize();
 
   return (

@@ -16,12 +16,13 @@ class AuthController {
     const { email, password } = req.body;
 
     const user = await userService.findUserByEmail(email);
-    if (!user) return res.status(401).json(userNotFound);
+    if (!user) return res.status(401).json({ errors: userNotFound });
 
     const validPassword = await userService.checkPassword(user, password);
-    if (!validPassword) return res.status(401).json(userNotFound);
+    if (!validPassword) return res.status(401).json({ errors: userNotFound });
 
-    if (!user.isVerified) return res.status(403).json(emailNotVerified);
+    if (!user.isVerified)
+      return res.status(403).json({ errors: emailNotVerified });
 
     const authResponse = await userService.generateAuthResponse(user);
     return res.status(200).json(authResponse);

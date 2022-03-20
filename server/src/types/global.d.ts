@@ -1,6 +1,6 @@
 declare global {
   interface ResponseMessage {
-    message: string;
+    msg: string;
   }
 
   interface RequestUser {

@@ -7,18 +7,21 @@ import './assets/css/toasts.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Document from './pages/document';
 import Login from './pages/login';
-import { ToastManagerProvider } from './contexts/toast-context';
+import { ToastProvider } from './contexts/toast-context';
+import { AuthProvider } from './contexts/auth-context';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ToastManagerProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/document" element={<Document />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </BrowserRouter>
-    </ToastManagerProvider>
+    <BrowserRouter>
+      <AuthProvider>
+        <ToastProvider>
+          <Routes>
+            <Route path="/document" element={<Document />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </ToastProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
