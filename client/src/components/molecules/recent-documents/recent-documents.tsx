@@ -7,7 +7,7 @@ import { DotsVerticalIcon } from '@heroicons/react/outline';
 
 const RecentDocuments = () => {
   const [documents, setDocuments] = useState<Array<DocumentInterface>>([]);
-  const { loadAllDocuments } = useDocument();
+  const { loadAllDocuments, removeDocument } = useDocument();
   const toastContext = useContext(ToastContext);
   const navigate = useNavigate();
 
@@ -17,6 +17,13 @@ const RecentDocuments = () => {
   ) => {
     const classList = (event.target as HTMLButtonElement).classList;
     if (!classList.contains('document-menu-btn')) navigate(`/document/${id}`);
+  };
+
+  const handleDocumentMenuBtnClick = async (id: number) => {
+    await removeDocument(id, (error: string) => {
+      if (error) toastContext?.error(error);
+    });
+    setDocuments(documents.filter((document) => document.id !== id));
   };
 
   useEffect(() => {
@@ -98,7 +105,12 @@ const RecentDocuments = () => {
                             )}
                           </p>
                         </div>
-                        <span className="hover:bg-gray-100 relative left-2 w-8 h-8 rounded-full flex items-center justify-center document-menu-btn">
+                        <span
+                          onClick={() =>
+                            handleDocumentMenuBtnClick(document.id)
+                          }
+                          className="hover:bg-gray-100 relative left-2 w-8 h-8 rounded-full flex items-center justify-center document-menu-btn"
+                        >
                           <DotsVerticalIcon className="w-5 h-5 document-menu-btn" />
                         </span>
                       </div>
