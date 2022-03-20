@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { ToastContext } from '../../../contexts/toast-context';
-import useWindowSize from '../../../hooks/useWindowSize';
+import useWindowSize from '../../../hooks/use-window-size';
 import Toast from '../../atoms/toast';
 
 const ToastManager = () => {

@@ -1,4 +1,4 @@
-import useWindowSize from '../../hooks/useWindowSize';
+import useWindowSize from '../../hooks/use-window-size';
 import TextField from '../../components/atoms/text-field/text-field';
 import { KeyboardEvent, useContext, useState } from 'react';
 import { ToastContext } from '../../contexts/toast-context';
@@ -97,6 +97,7 @@ const Login = () => {
           </button>
           <button
             onClick={login}
+            disabled={authContext?.loading}
             className="bg-blue-600 text-white text-sm font-semibold px-3 py-2 rounded hover:bg-blue-500 flex justify-center items-center space-x-1 active:ring-1"
           >
             <span className={`${authContext?.loading && 'opacity-0'}`}>

@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import API from '../services/api';
 import jwt_decode from 'jwt-decode';
-import useLocalStorage from '../hooks/useLocalStorage';
+import useLocalStorage from '../hooks/use-local-storage';
 import axios, { AxiosError } from 'axios';
 
 interface AuthInterface {

@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 import DocumentHeader from '../../components/organisms/document-header';
-import useWindowSize from '../../hooks/useWindowSize';
+import useWindowSize from '../../hooks/use-window-size';
 import {
   Editor,
   EditorState,
@@ -20,7 +20,6 @@ const Document = () => {
   const editorRef = useRef<null | Editor>(null);
   const [socket, setSocket] = useState<null | Socket>(null);
   const params = useParams();
-  console.log(params.id);
 
   const focusEditor = () => {
     editorRef?.current?.focus();
