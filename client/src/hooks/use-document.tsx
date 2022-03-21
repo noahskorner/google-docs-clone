@@ -6,6 +6,7 @@ import DocumentInterface from '../types/document';
 const useDocument = () => {
   const authContext = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const createDocument = async (callback: Function) => {
     if (!authContext?.accessToken) return;
@@ -60,7 +61,7 @@ const useDocument = () => {
   ) => {
     if (!authContext?.accessToken) return;
 
-    setLoading(true);
+    setSaving(true);
     try {
       await API.updateDocument(authContext?.accessToken, {
         id: document.id,
@@ -71,7 +72,7 @@ const useDocument = () => {
     } catch (error: any) {
       callback('An unknown error has occurred. Please try again.');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -91,6 +92,7 @@ const useDocument = () => {
 
   return {
     loading,
+    saving,
     createDocument,
     loadDocument,
     loadAllDocuments,

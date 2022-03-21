@@ -1,22 +1,26 @@
-import { ChangeEvent, FocusEvent, useRef, useState } from 'react';
+import { ChangeEvent, FocusEvent, useContext, useRef, useState } from 'react';
 import Logo from '../../atoms/logo';
 import { CSSTransition } from 'react-transition-group';
 import UserDropdown from '../../atoms/user-dropdown';
 import DocumentInterface from '../../../types/document';
-import useDocument from '../../../hooks/use-document';
+import { ToastContext } from '../../../contexts/toast-context';
 
 interface DocumentMenubarProps {
+  saving: boolean;
+  saveDocument: Function;
   document: null | DocumentInterface;
   setDocumentTitle: Function;
 }
 
 const DocumentMenuBar = ({
+  saving,
+  saveDocument,
   document,
   setDocumentTitle,
 }: DocumentMenubarProps) => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const dropdownRef = useRef(null);
-  const { loading, saveDocument } = useDocument();
+  const toastContext = useContext(ToastContext);
 
   const handleTitleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value;
@@ -27,7 +31,9 @@ const DocumentMenuBar = ({
     const title = event.target.value;
     await saveDocument(
       { title, ...document } as DocumentInterface,
-      (error: string | null) => {}
+      (error: string | null) => {
+        toastContext?.error(error);
+      }
     );
   };
 
@@ -106,7 +112,7 @@ const DocumentMenuBar = ({
             <button className="text-sm whitespace-nowrap px-2 py-1 font-medium hover:bg-gray-100 rounded-md">
               Help
             </button>
-            {loading && <p className="text-sm text-gray-500 px-2">Saving...</p>}
+            {saving && <p className="text-sm text-gray-500 px-2">Saving...</p>}
           </div>
         </div>
       </div>

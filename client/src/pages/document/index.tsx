@@ -14,7 +14,9 @@ import { useParams } from 'react-router-dom';
 import DocumentInterface from '../../types/document';
 import { ToastContext } from '../../contexts/toast-context';
 import useDocument from '../../hooks/use-document';
-import { AuthContext } from '../../contexts/auth-context';
+
+const DEFAULT_SAVE_TIME = 1500;
+let saveInterval: null | NodeJS.Timer = null;
 
 const Document = () => {
   const { heightStr } = useWindowSize();
@@ -25,9 +27,10 @@ const Document = () => {
   const [socket, setSocket] = useState<null | Socket>(null);
   const { id: documentId } = useParams();
   const toastContext = useContext(ToastContext);
-  const { loadDocument } = useDocument();
+  const { saving, loadDocument, saveDocument } = useDocument();
+  const [delayedSave, setDelayedSave] = useState(false);
   const [document, setDocument] = useState<null | DocumentInterface>(null);
-  const authContext = useContext(AuthContext);
+  const [documentRendered, setDocumentRendered] = useState(false);
 
   const focusEditor = () => {
     editorRef?.current?.focus();
@@ -39,8 +42,28 @@ const Document = () => {
 
   // send-changes
   const handleEditorChange = (editorState: EditorState) => {
+    setDelayedSave(true);
+
     setEditorState(editorState);
-    socket?.emit('send-changes', convertToRaw(editorState.getCurrentContent()));
+    const content = convertToRaw(editorState.getCurrentContent());
+    socket?.emit('send-changes', content);
+    setDocument({
+      ...document,
+      content: JSON.stringify(content),
+    } as DocumentInterface);
+
+    if (saveInterval !== null) {
+      clearInterval(saveInterval);
+    }
+    saveInterval = setInterval(() => {
+      if (document === null) return;
+
+      saveDocument(document, (error: string) => {
+        if (error) toastContext?.error(error);
+        if (saveInterval) clearInterval(saveInterval);
+        setDelayedSave(false);
+      });
+    }, DEFAULT_SAVE_TIME);
   };
 
   // connect
@@ -83,7 +106,19 @@ const Document = () => {
       }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [documentId, authContext?.accessToken]);
+  }, [documentId]);
+
+  useEffect(() => {
+    if (documentRendered || !document?.content) return;
+
+    const contentState = convertFromRaw(
+      JSON.parse(document?.content) as RawDraftContentState
+    );
+    const newEditorState = EditorState.createWithContent(contentState);
+    setEditorState(newEditorState);
+    setDocumentRendered(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [document]);
 
   return (
     <Fragment>
@@ -92,6 +127,8 @@ const Document = () => {
         className="w-full h-full bg-gray-100 flex flex-col"
       >
         <DocumentHeader
+          saving={saving || delayedSave}
+          saveDocument={saveDocument}
           document={document}
           setDocumentTitle={setDocumentTitle}
           documentHeaderRef={documentHeaderRef}
