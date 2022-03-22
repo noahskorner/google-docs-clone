@@ -36,6 +36,9 @@ class Document extends Model {
     onDelete: 'CASCADE',
   })
   users!: Array<DocumentUser>;
+
+  @Column(DataType.BOOLEAN)
+  isPublic!: boolean;
 }
 
 export { Document };
