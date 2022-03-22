@@ -3,4 +3,4 @@ enum PermissionEnum {
   EDIT = 'EDIT',
 }
 
-export { PermissionEnum };
+export default PermissionEnum;

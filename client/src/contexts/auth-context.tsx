@@ -75,7 +75,10 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
     const msExpiration = Math.abs(
       new Date().getTime() - new Date(exp * 1000).getTime()
     );
-    setTimeout(refreshAccessToken, msExpiration);
+    setTimeout(() => {
+      console.log('Silently refreshing!');
+      refreshAccessToken();
+    }, msExpiration);
   };
 
   const setAuth = (accessToken: string, refreshToken: string) => {

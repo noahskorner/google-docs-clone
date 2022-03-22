@@ -3,4 +3,4 @@ enum RoleEnum {
   SUPERADMIN = 'SUPERADMIN',
 }
 
-export { RoleEnum };
+export default RoleEnum;

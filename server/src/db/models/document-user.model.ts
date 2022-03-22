@@ -9,7 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from './user.model';
 import { Document } from './document.model';
-import { PermissionEnum } from '../../types/enums/permission-enum';
+import PermissionEnum from '../../types/enums/permission-enum';
 
 @Table({ tableName: 'document_user', underscored: true })
 class DocumentUser extends Model {

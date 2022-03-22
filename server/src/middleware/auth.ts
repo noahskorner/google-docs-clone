@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import env from '../config/env.config';
 import { UserRole } from '../db/models/user-role.model';
 import { Role } from '../db/models/role.model';
-import { RoleEnum } from '../types/enums/role-enum';
+import RoleEnum from '../types/enums/role-enum';
 
 const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];

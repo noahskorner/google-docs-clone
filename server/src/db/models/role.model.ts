@@ -6,7 +6,7 @@ import {
   HasMany,
   BelongsToMany,
 } from 'sequelize-typescript';
-import { RoleEnum } from '../../types/enums/role-enum';
+import RoleEnum from '../../types/enums/role-enum';
 import { User } from './user.model';
 import { UserRole } from './user-role.model';
 
