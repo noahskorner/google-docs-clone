@@ -15,6 +15,12 @@ import { User } from './user.model';
   include: [
     {
       model: DocumentUser,
+      include: [
+        {
+          model: User,
+          attributes: ['email'],
+        },
+      ],
     },
   ],
 }))

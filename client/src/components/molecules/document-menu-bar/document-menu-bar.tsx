@@ -2,7 +2,7 @@ import { ChangeEvent, FocusEvent, useContext, useRef, useState } from 'react';
 import Logo from '../../atoms/logo';
 import { CSSTransition } from 'react-transition-group';
 import UserDropdown from '../../atoms/user-dropdown';
-import DocumentInterface from '../../../types/document';
+import DocumentInterface from '../../../types/interfaces/document';
 import { ToastContext } from '../../../contexts/toast-context';
 
 interface DocumentMenubarProps {

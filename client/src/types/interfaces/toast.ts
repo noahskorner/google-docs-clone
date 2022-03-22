@@ -1,4 +1,4 @@
-import ActionInterface from './action-interface';
+import ActionInterface from './action';
 
 interface ToastInterface {
   id?: string;

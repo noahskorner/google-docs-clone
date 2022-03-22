@@ -5,21 +5,23 @@ import {
   DataType,
   HasMany,
   BelongsToMany,
-  DefaultScope,
+  Scopes,
 } from 'sequelize-typescript';
 import { DocumentUser } from './document-user.model';
 import { RefreshToken } from './refresh-token.model';
 import { Role } from './role.model';
 import { UserRole } from './user-role.model';
 
-@DefaultScope(() => ({
-  include: [
-    {
-      model: UserRole,
-      attributes: ['createdAt', 'updatedAt'],
-      include: [Role],
-    },
-  ],
+@Scopes(() => ({
+  withRoles: {
+    include: [
+      {
+        model: UserRole,
+        attributes: ['createdAt', 'updatedAt'],
+        include: [Role],
+      },
+    ],
+  },
 }))
 @Table({ tableName: 'user', underscored: true })
 class User extends Model {

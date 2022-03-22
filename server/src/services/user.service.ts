@@ -4,6 +4,7 @@ import { User } from '../db/models/user.model';
 import { mailService } from './mail.service';
 import { RefreshToken } from '../db/models/refresh-token.model';
 import env from '../config/env.config';
+import { UserRole } from '../db/models/user-role.model';
 
 class UserService {
   public findUserByEmail = async (email: string): Promise<User | null> => {
@@ -68,7 +69,7 @@ class UserService {
   public generateAuthResponse = async (
     user: RequestUser | User
   ): Promise<TokenPair> => {
-    const requestUser = this.getRequestUser(user);
+    const requestUser = await this.getRequestUser(user);
 
     const accessToken = jwt.sign(requestUser, env.ACCESS_TOKEN_SECRET, {
       expiresIn: env.ACCESS_TOKEN_EXPIRATION,
@@ -155,9 +156,14 @@ class UserService {
     await mailService.sendMail(mail);
   };
 
-  private getRequestUser = (user: User | RequestUser): RequestUser => {
+  private getRequestUser = async (
+    user: User | RequestUser
+  ): Promise<RequestUser> => {
     if (user instanceof User) {
-      const roles = user.userRoles.map((userRole) => userRole.role.name);
+      const userWithRoles = await User.scope('withRoles').findByPk(user.id);
+      const roles = userWithRoles?.userRoles.map(
+        (userRole) => userRole.role.name
+      );
       return {
         id: user.id,
         email: user.email,

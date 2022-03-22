@@ -11,7 +11,7 @@ import {
 import io, { Socket } from 'socket.io-client';
 import { BASE_URL } from '../../services/api';
 import { useParams } from 'react-router-dom';
-import DocumentInterface from '../../types/document';
+import DocumentInterface from '../../types/interfaces/document';
 import { ToastContext } from '../../contexts/toast-context';
 import useDocument from '../../hooks/use-document';
 

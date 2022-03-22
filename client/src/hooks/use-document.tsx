@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/auth-context';
 import API from '../services/api';
-import DocumentInterface from '../types/document';
+import DocumentInterface from '../types/interfaces/document';
 
 const useDocument = () => {
   const authContext = useContext(AuthContext);

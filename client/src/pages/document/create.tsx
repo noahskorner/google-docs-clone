@@ -4,7 +4,7 @@ import { PlusIcon } from '@heroicons/react/outline';
 import useDocument from '../../hooks/use-document';
 import { useContext } from 'react';
 import { ToastContext } from '../../contexts/toast-context';
-import DocumentInterface from '../../types/document';
+import DocumentInterface from '../../types/interfaces/document';
 import Spinner from '../../components/atoms/spinner';
 import { useNavigate } from 'react-router-dom';
 import RecentDocuments from '../../components/molecules/recent-documents';

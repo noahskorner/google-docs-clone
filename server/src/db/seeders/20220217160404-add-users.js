@@ -6,7 +6,6 @@ module.exports = {
       'user',
       [
         {
-          id: 1,
           email: 'noahskorner@gmail.com',
           password:
             '$2b$10$NAuxXaLjfkhINbeN1KD9EONfRfQZZH60.VqOxHNWyDjkxYd3N6hSO',
@@ -17,7 +16,6 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          id: 2,
           email: 'test@test.com',
           password:
             '$2b$10$NAuxXaLjfkhINbeN1KD9EONfRfQZZH60.VqOxHNWyDjkxYd3N6hSO',

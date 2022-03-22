@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import ToastManager from '../components/organisms/toast-manager';
-import ToastInterface from '../types/toast';
+import ToastInterface from '../types/interfaces/toast';
 
 const TOAST_TIMEOUT = 5000; // 5s
 

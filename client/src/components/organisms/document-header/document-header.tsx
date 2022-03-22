@@ -1,5 +1,5 @@
 import { MutableRefObject } from 'react';
-import DocumentInterface from '../../../types/document';
+import DocumentInterface from '../../../types/interfaces/document';
 import DocumentMenuBar from '../../molecules/document-menu-bar';
 import EditorToolbar from '../../molecules/editor-toolbar';
 

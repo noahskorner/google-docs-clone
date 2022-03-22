@@ -1,4 +1,4 @@
-import ToastInterface from '../../../types/toast';
+import ToastInterface from '../../../types/interfaces/toast';
 import { MouseEvent, useContext } from 'react';
 import { ToastContext } from '../../../contexts/toast-context';
 

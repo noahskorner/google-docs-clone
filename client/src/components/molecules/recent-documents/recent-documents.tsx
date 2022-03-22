@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContext } from '../../../contexts/toast-context';
 import useDocument from '../../../hooks/use-document';
-import DocumentInterface from '../../../types/document';
+import DocumentInterface from '../../../types/interfaces/document';
 import { DotsVerticalIcon } from '@heroicons/react/outline';
 
 const RecentDocuments = () => {
