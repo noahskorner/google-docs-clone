@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { documentController } from '../controllers/document.controller';
+import { documentController } from '../controllers/document/document.controller';
 import { authenticate } from '../middleware/auth';
 import { documentValidator } from '../validators/document.validator';
 

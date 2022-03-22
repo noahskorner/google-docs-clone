@@ -1,6 +1,6 @@
-import catchAsync from '../middleware/catch-async';
+import catchAsync from '../../middleware/catch-async';
 import { Request, Response } from 'express';
-import { Document } from '../db/models/document.model';
+import { Document } from '../../db/models/document.model';
 import { validationResult } from 'express-validator';
 
 class DocumentController {

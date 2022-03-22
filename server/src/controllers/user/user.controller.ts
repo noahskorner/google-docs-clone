@@ -1,10 +1,10 @@
 import { validationResult } from 'express-validator';
-import { userService } from '../services/user.service';
-import catchAsync from '../middleware/catch-async';
+import { userService } from '../../services/user.service';
+import catchAsync from '../../middleware/catch-async';
 import { Request, Response } from 'express';
-import { resetPassword } from '../responses';
+import { resetPassword } from '../../responses';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
-import env from '../config/env.config';
+import env from '../../config/env.config';
 
 class UserController {
   public register = catchAsync(async (req: Request, res: Response) => {
