@@ -7,6 +7,7 @@ import {
   BelongsToMany,
   DefaultScope,
 } from 'sequelize-typescript';
+import { DocumentUser } from './document-user.model';
 import { RefreshToken } from './refresh-token.model';
 import { Role } from './role.model';
 import { UserRole } from './user-role.model';
@@ -53,6 +54,11 @@ class User extends Model {
     onDelete: 'CASCADE',
   })
   userRoles!: Array<UserRole>;
+
+  @HasMany(() => DocumentUser, {
+    onDelete: 'CASCADE',
+  })
+  sharedDocuments!: Array<DocumentUser>;
 }
 
 export { User };

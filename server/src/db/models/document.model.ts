@@ -5,9 +5,19 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  HasMany,
+  DefaultScope,
 } from 'sequelize-typescript';
+import { DocumentUser } from './document-user.model';
 import { User } from './user.model';
 
+@DefaultScope(() => ({
+  include: [
+    {
+      model: DocumentUser,
+    },
+  ],
+}))
 @Table({ tableName: 'document', underscored: true })
 class Document extends Model {
   @Column(DataType.STRING)
@@ -21,6 +31,11 @@ class Document extends Model {
 
   @BelongsTo(() => User)
   user!: User;
+
+  @HasMany(() => DocumentUser, {
+    onDelete: 'CASCADE',
+  })
+  users!: Array<DocumentUser>;
 }
 
 export { Document };
