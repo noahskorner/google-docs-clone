@@ -1,6 +1,6 @@
 import Modal from '../../atoms/modal';
 import { UserAddIcon, LinkIcon } from '@heroicons/react/outline';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { AuthContext } from '../../../contexts/auth-context';
 import DocumentInterface from '../../../types/interfaces/document';
 import useDocument from '../../../hooks/use-document';
@@ -19,6 +19,7 @@ const ShareDocumentModal = ({
   const authContext = useContext(AuthContext);
   const toastContext = useContext(ToastContext);
   const { saving, saveDocument } = useDocument();
+  const copyLinkInputRef = useRef<null | HTMLInputElement>(null);
 
   const handleShareLinkBtnClick = async () => {
     const updatedDocument = {
@@ -48,6 +49,16 @@ const ShareDocumentModal = ({
         setDocument(updatedDocument);
       }
     });
+  };
+
+  const handleCopyLinkBtnClick = () => {
+    if (copyLinkInputRef === null || copyLinkInputRef.current === null) return;
+
+    const url = window.location.href;
+    copyLinkInputRef.current.value = url;
+    copyLinkInputRef.current.focus();
+    copyLinkInputRef.current.select();
+    window.document.execCommand('copy');
   };
 
   const publicAccessBtn = (
@@ -152,7 +163,15 @@ const ShareDocumentModal = ({
                 <div className="space-y-1">
                   {document.isPublic ? publicAccessBtn : restrictedAccessBtn}
                 </div>
-                <button className="font-semibold text-blue-600 p-2 hover:bg-blue-50 rounded-md">
+                <input
+                  ref={copyLinkInputRef}
+                  type="text"
+                  className="d-none opacity-0 cursor-default"
+                />
+                <button
+                  onClick={() => handleCopyLinkBtnClick()}
+                  className="font-semibold text-blue-600 p-2 hover:bg-blue-50 rounded-md active:ring-1 active:ring-blue-500"
+                >
                   Copy link
                 </button>
               </div>
