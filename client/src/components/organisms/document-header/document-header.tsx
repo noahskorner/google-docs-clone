@@ -8,6 +8,7 @@ interface DocumentHeaderProps {
   saveDocument: Function;
   document: null | DocumentInterface;
   setDocumentTitle: Function;
+  setDocument: Function;
   documentHeaderRef: MutableRefObject<null | HTMLDivElement>;
 }
 
@@ -16,6 +17,7 @@ const DocumentHeader = ({
   saveDocument,
   document,
   setDocumentTitle,
+  setDocument,
   documentHeaderRef,
 }: DocumentHeaderProps) => {
   return (
@@ -28,6 +30,7 @@ const DocumentHeader = ({
         saveDocument={saveDocument}
         document={document}
         setDocumentTitle={setDocumentTitle}
+        setDocument={setDocument}
       />
       <EditorToolbar />
     </div>

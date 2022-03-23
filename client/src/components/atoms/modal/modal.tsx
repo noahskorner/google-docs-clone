@@ -33,7 +33,10 @@ const Modal = ({ button, content, size = 'md' }: ModalProps) => {
         unmountOnExit
         children={
           <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center">
-            <div ref={contentRef} className={`${getSizeClass()} w-full z-10`}>
+            <div
+              ref={contentRef}
+              className={`${getSizeClass()} w-full z-10 p-4`}
+            >
               {content}
             </div>
             <div

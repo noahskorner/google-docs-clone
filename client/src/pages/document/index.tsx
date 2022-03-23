@@ -10,7 +10,7 @@ import {
 } from 'draft-js';
 import io, { Socket } from 'socket.io-client';
 import { BASE_URL } from '../../services/api';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DocumentInterface from '../../types/interfaces/document';
 import { ToastContext } from '../../contexts/toast-context';
 import useDocument from '../../hooks/use-document';
@@ -31,6 +31,7 @@ const Document = () => {
   const [delayedSave, setDelayedSave] = useState(false);
   const [document, setDocument] = useState<null | DocumentInterface>(null);
   const [documentRendered, setDocumentRendered] = useState(false);
+  const navigate = useNavigate();
 
   const focusEditor = () => {
     editorRef?.current?.focus();
@@ -101,8 +102,10 @@ const Document = () => {
     loadDocument(
       parseInt(documentId),
       (error: null | string, document: DocumentInterface) => {
-        if (error) toastContext?.error(error);
-        else setDocument(document);
+        if (error) {
+          toastContext?.error(error);
+          navigate('/document/create');
+        } else setDocument(document);
       }
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -111,12 +114,17 @@ const Document = () => {
   useEffect(() => {
     if (documentRendered || !document?.content) return;
 
-    const contentState = convertFromRaw(
-      JSON.parse(document?.content) as RawDraftContentState
-    );
-    const newEditorState = EditorState.createWithContent(contentState);
-    setEditorState(newEditorState);
-    setDocumentRendered(true);
+    try {
+      const contentState = convertFromRaw(
+        JSON.parse(document?.content) as RawDraftContentState
+      );
+      const newEditorState = EditorState.createWithContent(contentState);
+      setEditorState(newEditorState);
+    } catch {
+      toastContext?.error('Error when loading document.');
+    } finally {
+      setDocumentRendered(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [document]);
 
@@ -131,6 +139,7 @@ const Document = () => {
           saveDocument={saveDocument}
           document={document}
           setDocumentTitle={setDocumentTitle}
+          setDocument={setDocument}
           documentHeaderRef={documentHeaderRef}
         />
         <div

@@ -17,6 +17,10 @@ class DocumentValidator {
         }
         return true;
       }),
+    body('isPublic')
+      .optional()
+      .isBoolean()
+      .withMessage('Must provide true or false value.'),
   ];
 }
 const documentValidator = new DocumentValidator();

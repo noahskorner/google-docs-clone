@@ -8,6 +8,7 @@ import axios, { AxiosError } from 'axios';
 interface AuthInterface {
   accessToken: string | null;
   isAuthenticated: boolean;
+  email: string | null;
   loading: boolean;
   login: Function;
   refreshAccessToken: Function;
@@ -26,6 +27,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
     'refreshToken',
     null
   );
+  const [email, setEmail] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const location = useLocation();
 
@@ -69,9 +71,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
     }
   };
 
-  const silentRefresh = (accessToken: string) => {
-    const { exp } = jwt_decode<any>(accessToken);
-
+  const silentRefresh = (exp: number) => {
     const msExpiration = Math.abs(
       new Date().getTime() - new Date(exp * 1000).getTime()
     );
@@ -82,7 +82,10 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   };
 
   const setAuth = (accessToken: string, refreshToken: string) => {
-    silentRefresh(accessToken);
+    const { exp, email } = jwt_decode<any>(accessToken);
+
+    silentRefresh(exp);
+    setEmail(email);
     setAccessToken(accessToken);
     setRefreshToken(refreshToken);
     setIsAuthenticated(true);
@@ -91,6 +94,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   const destroyAuth = () => {
     setRefreshToken(null);
     setAccessToken(null);
+    setEmail(null);
     setIsAuthenticated(false);
   };
 
@@ -102,6 +106,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   return (
     <AuthContext.Provider
       value={{
+        email,
         accessToken,
         isAuthenticated,
         loading,

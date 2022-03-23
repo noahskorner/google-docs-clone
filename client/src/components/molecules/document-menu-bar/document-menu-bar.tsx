@@ -10,6 +10,7 @@ interface DocumentMenubarProps {
   saving: boolean;
   saveDocument: Function;
   document: null | DocumentInterface;
+  setDocument: Function;
   setDocumentTitle: Function;
 }
 
@@ -18,6 +19,7 @@ const DocumentMenuBar = ({
   saveDocument,
   document,
   setDocumentTitle,
+  setDocument,
 }: DocumentMenubarProps) => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const dropdownRef = useRef(null);
@@ -41,7 +43,7 @@ const DocumentMenuBar = ({
   return (
     <div className="w-full flex justify-between items-center px-3 pb-1 border-b">
       {/* Left */}
-      <div className="w-full flex justify-start items-center scrollbar-hidden">
+      <div className="w-full flex justify-start items-center overflow-x-hidden">
         <Logo />
         <div className="flex flex-col">
           <input
@@ -119,7 +121,9 @@ const DocumentMenuBar = ({
       </div>
       {/* Right */}
       <div className="flex items-center flex-shrink-0 pl-3 gap-x-4">
-        <ShareDocumentModal />
+        {document !== null && (
+          <ShareDocumentModal document={document} setDocument={setDocument} />
+        )}
         <UserDropdown />
       </div>
     </div>

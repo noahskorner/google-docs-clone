@@ -66,19 +66,16 @@ interface UpdateDocumentPayload {
   id: number;
   title?: string;
   content?: string;
+  isPublic?: boolean;
 }
 
 const updateDocument = (
   accessToken: string,
-  { id, title, content }: UpdateDocumentPayload
+  { id, ...payload }: UpdateDocumentPayload
 ) => {
-  return apiClient.put(
-    `document/${id}`,
-    { title, content },
-    {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    }
-  );
+  return apiClient.put(`document/${id}`, payload, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
 };
 
 const removeDocument = (accessToken: string, id: number) => {

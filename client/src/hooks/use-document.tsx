@@ -1,3 +1,4 @@
+import axios, { AxiosError } from 'axios';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/auth-context';
 import API from '../services/api';
@@ -33,7 +34,16 @@ const useDocument = () => {
       const document = response.data as DocumentInterface;
       callback(null, document);
     } catch (error: any) {
-      callback('An unknown error has occurred. Please try again.', null);
+      if (axios.isAxiosError(error)) {
+        const { response } = error as AxiosError;
+        if (response?.status === 404) {
+          callback('Document does not exist.');
+        } else {
+          callback('An unknown error has occured. Please try again.');
+        }
+      } else {
+        callback('An unknown error has occured. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -67,6 +77,7 @@ const useDocument = () => {
         id: document.id,
         title: document.title,
         content: document.content,
+        isPublic: document.isPublic,
       });
       callback(null);
     } catch (error: any) {

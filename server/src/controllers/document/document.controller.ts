@@ -2,14 +2,23 @@ import catchAsync from '../../middleware/catch-async';
 import { Request, Response } from 'express';
 import { Document } from '../../db/models/document.model';
 import { validationResult } from 'express-validator';
+import { Op } from 'sequelize';
 
 class DocumentController {
   public getOne = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const document = await Document.findOne({
       where: {
-        id: id,
-        userId: req.user?.id,
+        [Op.or]: [
+          {
+            id: id,
+            userId: req.user?.id,
+          },
+          {
+            id: id,
+            isPublic: true,
+          },
+        ],
       },
     });
 
@@ -42,7 +51,7 @@ class DocumentController {
     }
 
     const { id } = req.params;
-    const { title, content } = req.body;
+    const { title, content, isPublic } = req.body;
 
     const document = await Document.findOne({
       where: {
@@ -50,10 +59,12 @@ class DocumentController {
         userId: req.user?.id,
       },
     });
+
     if (!document) return res.sendStatus(404);
 
     if (title !== undefined && title !== null) document.title = title;
     if (content) document.content = content;
+    if (isPublic !== undefined) document.isPublic = isPublic;
     document.save();
 
     return res.sendStatus(200);

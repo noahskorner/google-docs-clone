@@ -4,7 +4,7 @@ import UserDropdown from '../../atoms/user-dropdown';
 
 const DocumentCreateHeader = () => {
   return (
-    <div className="w-full px-4 py-1 flex justify-between items-center">
+    <div className="w-full px-3 py-1 flex justify-between items-center">
       <Logo />
       <DocumentSearchbar />
       <UserDropdown />
