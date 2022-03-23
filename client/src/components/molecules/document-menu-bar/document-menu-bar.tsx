@@ -4,6 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 import UserDropdown from '../../atoms/user-dropdown';
 import DocumentInterface from '../../../types/interfaces/document';
 import { ToastContext } from '../../../contexts/toast-context';
+import ShareDocumentModal from '../share-document-modal';
 
 interface DocumentMenubarProps {
   saving: boolean;
@@ -117,22 +118,8 @@ const DocumentMenuBar = ({
         </div>
       </div>
       {/* Right */}
-      <div className="space-x-4 flex items-center flex-shrink-0 pl-3">
-        <button className="bg-blue-600 text-white text-sm font-semibold px-3 py-2 rounded hover:bg-blue-500 flex justify-center items-center space-x-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <span>Share</span>
-        </button>
+      <div className="flex items-center flex-shrink-0 pl-3 gap-x-4">
+        <ShareDocumentModal />
         <UserDropdown />
       </div>
     </div>
