@@ -1,6 +1,6 @@
 import Modal from '../../atoms/modal';
 import { UserAddIcon, LinkIcon } from '@heroicons/react/outline';
-import { useContext, useRef } from 'react';
+import { useContext, useRef, useState, ChangeEvent } from 'react';
 import { AuthContext } from '../../../contexts/auth-context';
 import DocumentInterface from '../../../types/interfaces/document';
 import useDocument from '../../../hooks/use-document';
@@ -20,6 +20,12 @@ const ShareDocumentModal = ({
   const toastContext = useContext(ToastContext);
   const { saving, saveDocument } = useDocument();
   const copyLinkInputRef = useRef<null | HTMLInputElement>(null);
+  const [email, setEmail] = useState<null | string>(null);
+  const [emailErrors, setEmailErrors] = useState<Array<string>>([]);
+
+  const handleShareEmailInputChange = (event: ChangeEvent) => {
+    setEmail((event.target as HTMLInputElement).value);
+  };
 
   const handleShareLinkBtnClick = async () => {
     const updatedDocument = {
@@ -133,8 +139,14 @@ const ShareDocumentModal = ({
               type="text"
               name=""
               id=""
+              value={email !== null ? email : ''}
+              onChange={handleShareEmailInputChange}
               placeholder="Enter email"
-              className="p-4 m-2 w-full bg-gray-100 border-b border-blue-500 rounded-t-md font-medium"
+              className={`${
+                emailErrors.length > 0
+                  ? 'border border-red-500 rounded-md'
+                  : 'border-b border-blue-500 rounded-t-md'
+              } p-4 w-full bg-gray-100  font-medium`}
             />
             <div className="px-2 py-4 w-full flex items-center justify-between hover:bg-gray-100 rounded-md">
               <div className="flex items-center space-x-2">
