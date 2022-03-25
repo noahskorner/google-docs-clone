@@ -2,18 +2,33 @@ import DocumentCreateHeader from '../../components/organisms/document-create-hea
 import useWindowSize from '../../hooks/use-window-size';
 import { PlusIcon } from '@heroicons/react/outline';
 import useDocument from '../../hooks/use-document';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ToastContext } from '../../contexts/toast-context';
 import DocumentInterface from '../../types/interfaces/document';
 import Spinner from '../../components/atoms/spinner';
 import { useNavigate } from 'react-router-dom';
 import RecentDocuments from '../../components/molecules/recent-documents';
+import { AuthContext } from '../../contexts/auth-context';
+import SharedDocuments from '../../components/molecules/shared-documents';
 
 const Create = () => {
   const { heightStr } = useWindowSize();
-  const { loading, createDocument } = useDocument();
+  const { loading, createDocument, loadAllDocuments } = useDocument();
   const toastContext = useContext(ToastContext);
+  const authContext = useContext(AuthContext);
   const navigate = useNavigate();
+  const [documents, setDocuments] = useState<null | Array<DocumentInterface>>(
+    null
+  );
+
+  const recentDocuments =
+    documents === null
+      ? []
+      : documents.filter((document) => document.userId === authContext?.id);
+  const sharedDocuments =
+    documents === null
+      ? []
+      : documents.filter((document) => document.userId !== authContext?.id);
 
   const handleDocumentCreateBtnClick = async () => {
     await createDocument(
@@ -26,6 +41,19 @@ const Create = () => {
       }
     );
   };
+
+  useEffect(() => {
+    loadAllDocuments(
+      (error: null | string, documents: null | Array<DocumentInterface>) => {
+        if (error === null && documents !== null) {
+          setDocuments(documents);
+        } else {
+          toastContext?.error(error);
+        }
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div style={{ height: heightStr }}>
@@ -50,7 +78,14 @@ const Create = () => {
           </div>
         </div>
       </div>
-      <RecentDocuments />
+      <RecentDocuments
+        documents={recentDocuments}
+        setDocuments={setDocuments}
+      />
+      <SharedDocuments
+        documents={sharedDocuments}
+        setDocuments={setDocuments}
+      />
     </div>
   );
 };

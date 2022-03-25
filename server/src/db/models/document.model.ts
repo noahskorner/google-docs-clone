@@ -44,7 +44,7 @@ class Document extends Model {
   users!: Array<DocumentUser>;
 
   @Column(DataType.BOOLEAN)
-  isPublic!: boolean;
+  isPublic: boolean = false;
 }
 
 export { Document };

@@ -7,6 +7,7 @@ import axios, { AxiosError } from 'axios';
 
 interface AuthInterface {
   accessToken: string | null;
+  id: number | null;
   isAuthenticated: boolean;
   email: string | null;
   loading: boolean;
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
     'refreshToken',
     null
   );
+  const [id, setId] = useState<number | null>(null);
   const [email, setEmail] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const location = useLocation();
@@ -82,9 +84,10 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   };
 
   const setAuth = (accessToken: string, refreshToken: string) => {
-    const { exp, email } = jwt_decode<any>(accessToken);
+    const { exp, id, email } = jwt_decode<any>(accessToken);
 
     silentRefresh(exp);
+    setId(id);
     setEmail(email);
     setAccessToken(accessToken);
     setRefreshToken(refreshToken);
@@ -94,6 +97,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   const destroyAuth = () => {
     setRefreshToken(null);
     setAccessToken(null);
+    setId(null);
     setEmail(null);
     setIsAuthenticated(false);
   };
@@ -106,6 +110,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
   return (
     <AuthContext.Provider
       value={{
+        id,
         email,
         accessToken,
         isAuthenticated,

@@ -7,7 +7,6 @@ import {
   ChangeEvent,
   KeyboardEvent,
 } from 'react';
-import { AuthContext } from '../../../contexts/auth-context';
 import DocumentInterface from '../../../types/interfaces/document';
 import useDocument from '../../../hooks/use-document';
 import { ToastContext } from '../../../contexts/toast-context';
@@ -25,7 +24,6 @@ const ShareDocumentModal = ({
   document,
   setDocument,
 }: ShareDocumentModalProps) => {
-  const authContext = useContext(AuthContext);
   const toastContext = useContext(ToastContext);
   const { saving, saveDocument, shareDocument } = useDocument();
   const copyLinkInputRef = useRef<null | HTMLInputElement>(null);

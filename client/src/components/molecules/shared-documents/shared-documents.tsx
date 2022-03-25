@@ -1,18 +1,13 @@
-import { useContext, MouseEvent } from 'react';
+import { MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ToastContext } from '../../../contexts/toast-context';
-import useDocument from '../../../hooks/use-document';
 import DocumentInterface from '../../../types/interfaces/document';
-import { DotsVerticalIcon } from '@heroicons/react/outline';
 
-interface RecentDocumentsProps {
+interface SharedDocumentsProps {
   documents: Array<DocumentInterface>;
   setDocuments: Function;
 }
 
-const RecentDocuments = ({ documents, setDocuments }: RecentDocumentsProps) => {
-  const { removeDocument } = useDocument();
-  const toastContext = useContext(ToastContext);
+const SharedDocuments = ({ documents, setDocuments }: SharedDocumentsProps) => {
   const navigate = useNavigate();
 
   const handleRecentDocumentBtnClick = (
@@ -23,19 +18,10 @@ const RecentDocuments = ({ documents, setDocuments }: RecentDocumentsProps) => {
     if (!classList.contains('document-menu-btn')) navigate(`/document/${id}`);
   };
 
-  const handleDocumentMenuBtnClick = async (id: number) => {
-    await removeDocument(id, (error: null | string) => {
-      if (error) toastContext?.error(error);
-    });
-    setDocuments((allDocuments: Array<DocumentInterface>) =>
-      allDocuments.filter((document) => document.id !== id)
-    );
-  };
-
   return (
     <div className="w-full flex justify-center items-center font-medium text-gray-700 p-4">
       <div className="w-full max-w-4xl space-y-4">
-        <h2>Recent Documents</h2>
+        <h2>Shared Documents</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4  gap-4">
           {documents
             .sort((a, b) => {
@@ -98,14 +84,6 @@ const RecentDocuments = ({ documents, setDocuments }: RecentDocumentsProps) => {
                             )}
                           </p>
                         </div>
-                        <span
-                          onClick={() =>
-                            handleDocumentMenuBtnClick(document.id)
-                          }
-                          className="hover:bg-gray-100 relative left-2 w-8 h-8 rounded-full flex items-center justify-center document-menu-btn"
-                        >
-                          <DotsVerticalIcon className="w-5 h-5 document-menu-btn" />
-                        </span>
                       </div>
                     </div>
                   </div>
@@ -118,4 +96,4 @@ const RecentDocuments = ({ documents, setDocuments }: RecentDocumentsProps) => {
   );
 };
 
-export default RecentDocuments;
+export default SharedDocuments;
