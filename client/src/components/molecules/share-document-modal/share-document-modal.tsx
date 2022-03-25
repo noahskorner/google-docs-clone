@@ -28,7 +28,6 @@ const ShareDocumentModal = ({
   const { saving, saveDocument, shareDocument } = useDocument();
   const copyLinkInputRef = useRef<null | HTMLInputElement>(null);
   const [email, setEmail] = useState<null | string>(null);
-  const [emailErrors, setEmailErrors] = useState<Array<string>>([]);
 
   const shareDocumentEvent = async () => {
     if (email === null || !validator.isEmail(email)) return;
@@ -184,11 +183,7 @@ const ShareDocumentModal = ({
               value={email !== null ? email : ''}
               onChange={handleShareEmailInputChange}
               placeholder="Enter email"
-              className={`${
-                emailErrors.length > 0
-                  ? 'border border-red-500 rounded-md'
-                  : 'border-b border-blue-500 rounded-t-md'
-              } p-4 w-full bg-gray-100  font-medium`}
+              className="border-b border-blue-500 rounded-t-md p-4 w-full bg-gray-100  font-medium"
             />
             <SharedUsers documentUsers={document.users} />
             <div className="w-full flex justify-end space-x-2">
