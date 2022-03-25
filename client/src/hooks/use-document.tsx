@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../contexts/auth-context';
+import PermissionEnum from '../enums/permission-enum';
 import API from '../services/api';
 import DocumentInterface from '../types/interfaces/document';
 
@@ -9,7 +10,9 @@ const useDocument = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const createDocument = async (callback: Function) => {
+  const createDocument = async (
+    callback: (error: null | string, document: null | DocumentInterface) => void
+  ) => {
     if (!authContext?.accessToken) return;
 
     setLoading(true);
@@ -24,7 +27,10 @@ const useDocument = () => {
     }
   };
 
-  const loadDocument = async (id: number, callback: Function) => {
+  const loadDocument = async (
+    id: number,
+    callback: (error: null | string, document: null | DocumentInterface) => void
+  ) => {
     if (!authContext?.accessToken) return;
 
     setLoading(true);
@@ -37,19 +43,24 @@ const useDocument = () => {
       if (axios.isAxiosError(error)) {
         const { response } = error as AxiosError;
         if (response?.status === 404) {
-          callback('Document does not exist.');
+          callback('Document does not exist.', null);
         } else {
-          callback('An unknown error has occured. Please try again.');
+          callback('An unknown error has occured. Please try again.', null);
         }
       } else {
-        callback('An unknown error has occured. Please try again.');
+        callback('An unknown error has occured. Please try again.', null);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const loadAllDocuments = async (callback: Function) => {
+  const loadAllDocuments = async (
+    callback: (
+      error: null | string,
+      documents: null | Array<DocumentInterface>
+    ) => void
+  ) => {
     if (!authContext?.accessToken) return;
 
     setLoading(true);
@@ -67,7 +78,7 @@ const useDocument = () => {
 
   const saveDocument = async (
     document: DocumentInterface,
-    callback: Function
+    callback: (error: null | string) => void
   ) => {
     if (!authContext?.accessToken) return;
 
@@ -87,7 +98,10 @@ const useDocument = () => {
     }
   };
 
-  const removeDocument = async (id: number, callback: Function) => {
+  const removeDocument = async (
+    id: number,
+    callback: (error: null | string) => void
+  ) => {
     if (!authContext?.accessToken) return;
 
     setLoading(true);
@@ -101,6 +115,39 @@ const useDocument = () => {
     }
   };
 
+  const shareDocument = async (
+    id: number,
+    email: string,
+    callback: (error: null | string) => void
+  ) => {
+    if (!authContext?.accessToken) return;
+
+    setLoading(true);
+    try {
+      await API.createDocumentUser(authContext?.accessToken, {
+        id,
+        email,
+        permission: PermissionEnum.EDIT,
+      });
+      callback(null);
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        const { response } = error as AxiosError;
+        if (response?.status === 401) {
+          callback(response?.data?.errors?.[0].msg);
+        } else {
+          callback('An unknown error has occured. Please try again.');
+        }
+      } else {
+        callback('An unknown error has occured. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+
+    return;
+  };
+
   return {
     loading,
     saving,
@@ -109,6 +156,7 @@ const useDocument = () => {
     loadAllDocuments,
     saveDocument,
     removeDocument,
+    shareDocument,
   };
 };
 

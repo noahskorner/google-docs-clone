@@ -53,13 +53,18 @@ input:focus {
   .bg-primary {
     @apply bg-white dark:bg-slate-900;
   }
-
   /* Buttons */
   .btn-icon {
     @apply w-8 h-8 border rounded-md border-primary flex justify-center items-center hover:bg-slate-100 dark:hover:bg-slate-800;
   }
   .btn-primary {
     @apply bg-blue-600 text-white text-sm font-semibold px-3 py-2 rounded hover:bg-blue-500 flex justify-center items-center space-x-1;
+  }
+  .btn-secondary {
+    @apply bg-slate-500 text-white text-sm font-semibold px-3 py-2 rounded hover:bg-slate-400 flex justify-center items-center space-x-1;
+  }
+  .btn-disabled {
+    @apply bg-gray-200 cursor-not-allowed text-gray-400 text-sm font-semibold px-3 py-2 rounded flex justify-center items-center space-x-1;
   }
 
   /* Borders */

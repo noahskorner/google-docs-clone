@@ -59,7 +59,7 @@ const Document = () => {
     saveInterval = setInterval(() => {
       if (document === null) return;
 
-      saveDocument(document, (error: string) => {
+      saveDocument(document, (error: null | string) => {
         if (error) toastContext?.error(error);
         if (saveInterval) clearInterval(saveInterval);
         setDelayedSave(false);
@@ -101,7 +101,7 @@ const Document = () => {
 
     loadDocument(
       parseInt(documentId),
-      (error: null | string, document: DocumentInterface) => {
+      (error: null | string, document: null | DocumentInterface) => {
         if (error) {
           toastContext?.error(error);
           navigate('/document/create');

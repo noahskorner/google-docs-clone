@@ -1,4 +1,5 @@
 import axios from 'axios';
+import PermissionEnum from '../enums/permission-enum';
 
 export const BASE_URL = 'http://localhost:3001/';
 
@@ -84,6 +85,28 @@ const removeDocument = (accessToken: string, id: number) => {
   });
 };
 
+interface CreateDocumentUserPayload {
+  email: string;
+  id: number;
+  permission: PermissionEnum;
+}
+
+const createDocumentUser = (
+  accessToken: string,
+  payload: CreateDocumentUserPayload
+) => {
+  return apiClient.post(
+    `document/${payload.id}/share`,
+    {
+      email: payload.email,
+      permission: payload.permission,
+    },
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    }
+  );
+};
+
 const API = {
   login,
   register,
@@ -94,6 +117,7 @@ const API = {
   getAllDocuments,
   updateDocument,
   removeDocument,
+  createDocumentUser,
 };
 
 export default API;

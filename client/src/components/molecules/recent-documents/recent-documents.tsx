@@ -20,7 +20,7 @@ const RecentDocuments = () => {
   };
 
   const handleDocumentMenuBtnClick = async (id: number) => {
-    await removeDocument(id, (error: string) => {
+    await removeDocument(id, (error: null | string) => {
       if (error) toastContext?.error(error);
     });
     setDocuments(documents.filter((document) => document.id !== id));
@@ -28,8 +28,8 @@ const RecentDocuments = () => {
 
   useEffect(() => {
     loadAllDocuments(
-      (error: null | string, documents: Array<DocumentInterface>) => {
-        if (!error) {
+      (error: null | string, documents: null | Array<DocumentInterface>) => {
+        if (error === null && documents !== null) {
           setDocuments(documents);
         } else {
           toastContext?.error(error);

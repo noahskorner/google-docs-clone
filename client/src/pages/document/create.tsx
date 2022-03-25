@@ -16,13 +16,15 @@ const Create = () => {
   const navigate = useNavigate();
 
   const handleDocumentCreateBtnClick = async () => {
-    await createDocument((error: string, document: DocumentInterface) => {
-      if (!error) {
-        navigate(`/document/${document.id}`);
-      } else {
-        toastContext?.error(error);
+    await createDocument(
+      (error: null | string, document: null | DocumentInterface) => {
+        if (error === null && document !== null) {
+          navigate(`/document/${document.id}`);
+        } else {
+          toastContext?.error(error);
+        }
       }
-    });
+    );
   };
 
   return (

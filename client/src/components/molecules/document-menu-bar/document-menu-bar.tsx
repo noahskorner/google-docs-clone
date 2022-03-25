@@ -34,7 +34,7 @@ const DocumentMenuBar = ({
     const title = event.target.value;
     await saveDocument(
       { title, ...document } as DocumentInterface,
-      (error: string | null) => {
+      (error: null | string | null) => {
         toastContext?.error(error);
       }
     );
@@ -43,7 +43,7 @@ const DocumentMenuBar = ({
   return (
     <div className="w-full flex justify-between items-center px-3 pb-1 border-b">
       {/* Left */}
-      <div className="w-full flex justify-start items-center overflow-x-hidden">
+      <div className="w-full flex justify-start items-center overflow-x-hidden md:overflow-visible">
         <Logo />
         <div className="flex flex-col">
           <input

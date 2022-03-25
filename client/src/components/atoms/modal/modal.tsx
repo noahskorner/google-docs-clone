@@ -24,7 +24,6 @@ const Modal = ({ button, content, size = 'md' }: ModalProps) => {
   return (
     <>
       <div onClick={() => setShowModal(true)}>{button}</div>
-
       <CSSTransition
         nodeRef={contentRef}
         in={showModal}

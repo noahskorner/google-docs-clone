@@ -38,7 +38,7 @@ const Login = () => {
   const login = async () => {
     if (!validate()) return;
 
-    await authContext?.login(email, password, (error: string | null) => {
+    await authContext?.login(email, password, (error: null | string | null) => {
       if (error === null) {
         toastContext?.success('Successfully logged in!');
         navigate('/document/create');

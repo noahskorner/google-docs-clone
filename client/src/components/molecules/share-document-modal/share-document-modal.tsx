@@ -1,11 +1,20 @@
 import Modal from '../../atoms/modal';
 import { UserAddIcon, LinkIcon } from '@heroicons/react/outline';
-import { useContext, useRef, useState, ChangeEvent } from 'react';
+import {
+  useContext,
+  useRef,
+  useState,
+  ChangeEvent,
+  KeyboardEvent,
+} from 'react';
 import { AuthContext } from '../../../contexts/auth-context';
 import DocumentInterface from '../../../types/interfaces/document';
 import useDocument from '../../../hooks/use-document';
 import { ToastContext } from '../../../contexts/toast-context';
 import Spinner from '../../atoms/spinner';
+import validator from 'validator';
+import PermissionEnum from '../../../enums/permission-enum';
+import SharedUsers from '../shared-users';
 
 interface ShareDocumentModalProps {
   document: DocumentInterface;
@@ -18,10 +27,34 @@ const ShareDocumentModal = ({
 }: ShareDocumentModalProps) => {
   const authContext = useContext(AuthContext);
   const toastContext = useContext(ToastContext);
-  const { saving, saveDocument } = useDocument();
+  const { saving, saveDocument, shareDocument } = useDocument();
   const copyLinkInputRef = useRef<null | HTMLInputElement>(null);
   const [email, setEmail] = useState<null | string>(null);
   const [emailErrors, setEmailErrors] = useState<Array<string>>([]);
+
+  const shareDocumentEvent = async () => {
+    if (email === null || !validator.isEmail(email)) return;
+
+    await shareDocument(document.id, email, (error: null | string) => {
+      if (error) toastContext?.error(error);
+      else {
+        toastContext?.success(`Successfully shared document with ${email}!`);
+        setDocument({
+          ...document,
+          users: [
+            ...document.users,
+            {
+              permission: PermissionEnum.EDIT,
+              documentId: document.id,
+              user: {
+                email,
+              },
+            },
+          ],
+        } as DocumentInterface);
+      }
+    });
+  };
 
   const handleShareEmailInputChange = (event: ChangeEvent) => {
     setEmail((event.target as HTMLInputElement).value);
@@ -32,7 +65,7 @@ const ShareDocumentModal = ({
       ...document,
       isPublic: true,
     } as DocumentInterface;
-    await saveDocument(updatedDocument, (error: string) => {
+    await saveDocument(updatedDocument, (error: null | string) => {
       if (error) {
         toastContext?.error('There was an error making this document public.');
       } else {
@@ -46,7 +79,7 @@ const ShareDocumentModal = ({
       ...document,
       isPublic: false,
     } as DocumentInterface;
-    await saveDocument(updatedDocument, (error: string) => {
+    await saveDocument(updatedDocument, (error: null | string) => {
       if (error) {
         toastContext?.error(
           'There was an error making this document restricted.'
@@ -65,6 +98,14 @@ const ShareDocumentModal = ({
     copyLinkInputRef.current.focus();
     copyLinkInputRef.current.select();
     window.document.execCommand('copy');
+  };
+
+  const handleOnKeyPress = async (event: KeyboardEvent) => {
+    if (event.key === 'Enter') await shareDocumentEvent();
+  };
+
+  const handleShareBtnClick = async () => {
+    await shareDocumentEvent();
   };
 
   const publicAccessBtn = (
@@ -127,7 +168,10 @@ const ShareDocumentModal = ({
         </button>
       }
       content={
-        <div className="space-y-4 text-sm">
+        <div
+          onKeyPress={(event) => handleOnKeyPress(event)}
+          className="space-y-4 text-sm"
+        >
           <div className="rounded-md bg-white shadow-xl p-4 space-y-4">
             <div className="flex items-center space-x-2 m-2">
               <div className="w-8 h-8 bg-blue-500 flex justify-center items-center rounded-full text-white">
@@ -148,19 +192,18 @@ const ShareDocumentModal = ({
                   : 'border-b border-blue-500 rounded-t-md'
               } p-4 w-full bg-gray-100  font-medium`}
             />
-            <div className="px-2 py-4 w-full flex items-center justify-between hover:bg-gray-100 rounded-md">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 flex justify-center items-center text-white bg-green-800 uppercase rounded-full text-xl font-medium">
-                  {authContext?.email && authContext?.email[0]}
-                </div>
-                <p className="font-medium">
-                  {authContext?.email && authContext?.email} (you)
-                </p>
-              </div>
-              <p className="text-gray-500 italic">Owner</p>
-            </div>
-            <div className="w-full flex justify-end">
-              <button className="btn-primary px-6">Done</button>
+            <SharedUsers documentUsers={document.users} />
+            <div className="w-full flex justify-end space-x-2">
+              <button
+                onClick={() => handleShareBtnClick()}
+                className={`${
+                  email === null || !validator.isEmail(email)
+                    ? 'btn-disabled'
+                    : 'btn-primary'
+                } px-6`}
+              >
+                Share
+              </button>
             </div>
           </div>
           <div className="rounded-md bg-white shadow-xl p-4 space-y-4 flex flex-col">
