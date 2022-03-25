@@ -17,7 +17,7 @@ class ShareController {
     if (!document) return res.sendStatus(400);
     // this document can only be shared by it's original creator
     if (!req.user?.id || document.userId !== parseInt(req.user?.id)) {
-      return res.sendStatus(401);
+      return res.sendStatus(400);
     }
 
     const { email, permission } = req.body;
