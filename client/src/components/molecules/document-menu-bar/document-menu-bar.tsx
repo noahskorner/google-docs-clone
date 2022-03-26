@@ -5,28 +5,16 @@ import DocumentInterface from '../../../types/interfaces/document';
 import { ToastContext } from '../../../contexts/toast-context';
 import ShareDocumentModal from '../share-document-modal';
 import { AuthContext } from '../../../contexts/auth-context';
-import { DocumentContext } from '../../../contexts/document-context';
 import useRandomBackground from '../../../hooks/use-random-background';
+import useDocument from '../../../hooks/use-document';
+import useAuth from '../../../hooks/use-auth';
 
-interface DocumentMenubarProps {
-  saving: boolean;
-  saveDocument: Function;
-  document: null | DocumentInterface;
-  setDocument: Function;
-  setDocumentTitle: Function;
-}
-
-const DocumentMenuBar = ({
-  saving,
-  saveDocument,
-  document,
-  setDocumentTitle,
-  setDocument,
-}: DocumentMenubarProps) => {
+const DocumentMenuBar = () => {
   const { backgroundColor } = useRandomBackground();
   const toastContext = useContext(ToastContext);
-  const authContext = useContext(AuthContext);
-  const documentContext = useContext(DocumentContext);
+  const { email } = useAuth();
+  const { document, saving, currentUsers, saveDocument, setDocumentTitle } =
+    useDocument();
 
   const handleTitleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value;
@@ -34,13 +22,7 @@ const DocumentMenuBar = ({
   };
 
   const handleTitleInputBlur = async (event: FocusEvent<HTMLInputElement>) => {
-    const title = event.target.value;
-    await saveDocument(
-      { title, ...document } as DocumentInterface,
-      (error: null | string) => {
-        if (error !== null) toastContext?.error(error);
-      }
-    );
+    await saveDocument();
   };
 
   return (
@@ -91,13 +73,13 @@ const DocumentMenuBar = ({
       </div>
       {/* Right */}
       <div className="flex items-center flex-shrink-0 pl-3 gap-x-4">
-        {document !== null && document.userId === authContext?.id && (
+        {/* {document !== null && document.userId === authContext?.id && (
           <ShareDocumentModal document={document} setDocument={setDocument} />
-        )}
+        )} */}
         <div className="flex items-center gap-x-2">
-          {documentContext?.currentUsers &&
-            Array.from(documentContext?.currentUsers)
-              .filter((currentUser) => currentUser !== authContext?.email)
+          {currentUsers &&
+            Array.from(currentUsers)
+              .filter((currentUser) => currentUser !== email)
               .map((currentUser) => {
                 return (
                   <div

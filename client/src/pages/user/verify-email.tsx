@@ -16,24 +16,24 @@ const VerifyEmail = () => {
       return;
     }
 
-    try {
-      await API.verifyEmail(token);
+    // try {
+    //   await API.verifyEmail(token);
 
-      toastContext?.addToast({
-        title: 'Successfully verified your email address!',
-        body: 'You may now login.',
-        color: 'success',
-      });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toastContext?.error('An unknown error has occurred. Please try again');
-      } else {
-        toastContext?.error('An unknown error has occurred. Please try again');
-      }
-    } finally {
-      setChildren(<Navigate to="/login" />);
-      return;
-    }
+    //   toastContext?.addToast({
+    //     title: 'Successfully verified your email address!',
+    //     body: 'You may now login.',
+    //     color: 'success',
+    //   });
+    // } catch (error) {
+    //   if (axios.isAxiosError(error)) {
+    //     toastContext?.error('An unknown error has occurred. Please try again');
+    //   } else {
+    //     toastContext?.error('An unknown error has occurred. Please try again');
+    //   }
+    // } finally {
+    //   setChildren(<Navigate to="/login" />);
+    //   return;
+    // }
   };
 
   useEffect(() => {

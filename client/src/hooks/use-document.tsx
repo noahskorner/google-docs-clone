@@ -1,162 +1,119 @@
 import axios, { AxiosError } from 'axios';
-import { useContext, useState } from 'react';
-import { AuthContext } from '../contexts/auth-context';
-import PermissionEnum from '../enums/permission-enum';
-import API from '../services/api';
+import { useContext, useEffect } from 'react';
+import { DocumentContext } from '../contexts/document-context';
+import DocumentService from '../services/document-service';
 import DocumentInterface from '../types/interfaces/document';
+import useAuth from './use-auth';
 
 const useDocument = () => {
-  const authContext = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const { accessToken } = useAuth();
+  const {
+    document,
+    setDocument,
+    loading,
+    setLoading,
+    saving,
+    setSaving,
+    errors,
+    setErrors,
+    currentUsers,
+    setCurrentUsers,
+  } = useContext(DocumentContext);
 
-  const createDocument = async (
-    callback: (error: null | string, document: null | DocumentInterface) => void
-  ) => {
-    if (!authContext?.accessToken) return;
-
-    setLoading(true);
-    try {
-      const response = await API.createDocument(authContext.accessToken);
-      const document = response.data as DocumentInterface;
-      callback(null, document);
-    } catch (error: any) {
-      callback('An unknown error has occurred. Please try again.', null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadDocument = async (
-    id: number,
-    callback: (error: null | string, document: null | DocumentInterface) => void
-  ) => {
-    if (!authContext?.accessToken) return;
-
+  const loadDocument = async (accessToken: string, documentId: number) => {
     setLoading(true);
 
     try {
-      const response = await API.getDocument(authContext?.accessToken, id);
-      const document = response.data as DocumentInterface;
-      callback(null, document);
+      const response = await DocumentService.get(accessToken, documentId);
+      setDocument(response.data as DocumentInterface);
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         const { response } = error as AxiosError;
         if (response?.status === 404) {
-          callback('Document does not exist.', null);
+          setErrors((prev) => [...prev, 'Document does not exist.']);
         } else {
-          callback('An unknown error has occured. Please try again.', null);
+          setErrors((prev) => [
+            ...prev,
+            'An unknown error has occured. Please try again.',
+          ]);
         }
       } else {
-        callback('An unknown error has occured. Please try again.', null);
+        setErrors((prev) => [
+          ...prev,
+          'An unknown error has occured. Please try again.',
+        ]);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const loadAllDocuments = async (
-    callback: (
-      error: null | string,
-      documents: null | Array<DocumentInterface>
-    ) => void
-  ) => {
-    if (!authContext?.accessToken) return;
-
-    setLoading(true);
-
-    try {
-      const response = await API.getAllDocuments(authContext?.accessToken);
-      const documents = response.data as DocumentInterface[];
-      callback(null, documents);
-    } catch (error: any) {
-      callback('An unknown error has occurred. Please try again.', null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const saveDocument = async (
-    document: DocumentInterface,
-    callback: (error: null | string) => void
-  ) => {
-    if (!authContext?.accessToken) return;
+  const saveDocument = async () => {
+    if (accessToken === null || document === null) return;
 
     setSaving(true);
+
     try {
-      await API.updateDocument(authContext?.accessToken, {
-        id: document.id,
-        title: document.title,
-        content: document.content,
-        isPublic: document.isPublic,
-      });
-      callback(null);
+      await DocumentService.update(accessToken, document);
     } catch (error: any) {
-      callback('An unknown error has occurred. Please try again.');
+      setErrors((prev) => [
+        ...prev,
+        'An unknown error has occurred. Please try again.',
+      ]);
     } finally {
       setSaving(false);
     }
   };
 
-  const removeDocument = async (
-    id: number,
-    callback: (error: null | string) => void
-  ) => {
-    if (!authContext?.accessToken) return;
+  // const shareDocument = async (
+  //   id: number,
+  //   email: string,
+  //   callback: (error: null | string) => void
+  // ) => {
+  //   if (!authContext?.accessToken) return;
 
-    setLoading(true);
-    try {
-      await API.removeDocument(authContext?.accessToken, id);
-      callback(null);
-    } catch (error: any) {
-      callback('An unknown error has occurred. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   setLoading(true);
+  //   try {
+  //     await API.createDocumentUser(authContext?.accessToken, {
+  //       id,
+  //       email,
+  //       permission: PermissionEnum.EDIT,
+  //     });
+  //     callback(null);
+  //   } catch (error: any) {
+  //     if (axios.isAxiosError(error)) {
+  //       const { response } = error as AxiosError;
+  //       if (response?.status === 401) {
+  //         callback(response?.data?.errors?.[0].msg);
+  //       } else {
+  //         callback('An unknown error has occured. Please try again.');
+  //       }
+  //     } else {
+  //       callback('An unknown error has occured. Please try again.');
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
 
-  const shareDocument = async (
-    id: number,
-    email: string,
-    callback: (error: null | string) => void
-  ) => {
-    if (!authContext?.accessToken) return;
+  //   return;
+  // };
 
-    setLoading(true);
-    try {
-      await API.createDocumentUser(authContext?.accessToken, {
-        id,
-        email,
-        permission: PermissionEnum.EDIT,
-      });
-      callback(null);
-    } catch (error: any) {
-      if (axios.isAxiosError(error)) {
-        const { response } = error as AxiosError;
-        if (response?.status === 401) {
-          callback(response?.data?.errors?.[0].msg);
-        } else {
-          callback('An unknown error has occured. Please try again.');
-        }
-      } else {
-        callback('An unknown error has occured. Please try again.');
-      }
-    } finally {
-      setLoading(false);
-    }
-
-    return;
+  const setDocumentTitle = (title: string) => {
+    setDocument({ ...document, title } as DocumentInterface);
   };
 
   return {
+    document,
     loading,
+    errors,
     saving,
-    createDocument,
+    currentUsers,
     loadDocument,
-    loadAllDocuments,
     saveDocument,
-    removeDocument,
-    shareDocument,
+    setDocument,
+    setDocumentTitle,
+    setCurrentUsers,
+    setSaving,
   };
 };
 

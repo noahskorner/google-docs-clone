@@ -6,7 +6,7 @@ import Logo from '../../components/atoms/logo';
 import validator from 'validator';
 import Spinner from '../../components/atoms/spinner';
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../contexts/auth-context';
+import useAuth from '../../hooks/use-auth';
 
 const Login = () => {
   const { widthStr, heightStr } = useWindowSize();
@@ -14,9 +14,9 @@ const Login = () => {
   const [emailErrors, setEmailErrors] = useState<Array<string>>([]);
   const [password, setPassword] = useState('');
   const [passwordErrors, setPasswordErrors] = useState<Array<string>>([]);
+  const { loading, errors, login } = useAuth();
   const navigate = useNavigate();
   const toastContext = useContext(ToastContext);
-  const authContext = useContext(AuthContext);
 
   const validate = () => {
     setEmailErrors([]);
@@ -35,23 +35,25 @@ const Login = () => {
     return isValid;
   };
 
-  const login = async () => {
+  const loginUser = async () => {
     if (!validate()) return;
 
-    await authContext?.login(email, password, (error: null | string | null) => {
-      if (error === null) {
-        toastContext?.success('Successfully logged in!');
-        navigate('/document/create');
-      } else {
+    await login(email, password);
+
+    if (errors.length) {
+      errors.forEach((error) => {
         toastContext?.error(error);
-        setEmailErrors(['']);
-        setPasswordErrors(['']);
-      }
-    });
+      });
+      setEmailErrors(['']);
+      setPasswordErrors(['']);
+    } else {
+      toastContext?.success('Successfully logged in!');
+      navigate('/document/create');
+    }
   };
 
   const handleOnKeyPress = (event: KeyboardEvent) => {
-    if (event.key === 'Enter') login();
+    if (event.key === 'Enter') loginUser();
   };
 
   const handleOnInputEmail = (value: string) => {
@@ -106,14 +108,12 @@ const Login = () => {
             Forgot Password?
           </button>
           <button
-            onClick={login}
-            disabled={authContext?.loading}
+            onClick={loginUser}
+            disabled={loading}
             className="bg-blue-600 text-white text-sm font-semibold px-3 py-2 rounded hover:bg-blue-500 flex justify-center items-center space-x-1 active:ring-1"
           >
-            <span className={`${authContext?.loading && 'opacity-0'}`}>
-              Login
-            </span>
-            {authContext?.loading && <Spinner size="sm" />}
+            <span className={`${loading && 'opacity-0'}`}>Login</span>
+            {loading && <Spinner size="sm" />}
           </button>
         </div>
       </div>

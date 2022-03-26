@@ -56,48 +56,48 @@ const Login = () => {
   const register = async () => {
     if (!validate()) return;
 
-    try {
-      await API.register({
-        email,
-        password1,
-        password2,
-      });
+    // try {
+    //   await API.register({
+    //     email,
+    //     password1,
+    //     password2,
+    //   });
 
-      toastContext?.addToast({
-        title: `Successfully registered ${email}!`,
-        body: 'Please check your inbox to verify your email address',
-        color: 'success',
-      });
-      navigate('/login');
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const { response } = error as AxiosError;
-        const errors = (response as any).data.errors;
-        const emailFieldErrors = errors
-          .filter((error: any) => error.param === 'email')
-          .map((error: any) => error.msg);
-        const password1FieldErrors = errors
-          .filter((error: any) => error.param === 'password1')
-          .map((error: any) => error.msg);
-        const passsword2FieldErrors = errors
-          .filter((error: any) => error.param === 'password2')
-          .map((error: any) => error.msg);
+    //   toastContext?.addToast({
+    //     title: `Successfully registered ${email}!`,
+    //     body: 'Please check your inbox to verify your email address',
+    //     color: 'success',
+    //   });
+    //   navigate('/login');
+    // } catch (error) {
+    //   if (axios.isAxiosError(error)) {
+    //     const { response } = error as AxiosError;
+    //     const errors = (response as any).data.errors;
+    //     const emailFieldErrors = errors
+    //       .filter((error: any) => error.param === 'email')
+    //       .map((error: any) => error.msg);
+    //     const password1FieldErrors = errors
+    //       .filter((error: any) => error.param === 'password1')
+    //       .map((error: any) => error.msg);
+    //     const passsword2FieldErrors = errors
+    //       .filter((error: any) => error.param === 'password2')
+    //       .map((error: any) => error.msg);
 
-        if (emailFieldErrors) setEmailErrors(emailFieldErrors);
-        if (password1FieldErrors) setPassword1Errors(password1FieldErrors);
-        if (passsword2FieldErrors) setPassword2Errors(passsword2FieldErrors);
+    //     if (emailFieldErrors) setEmailErrors(emailFieldErrors);
+    //     if (password1FieldErrors) setPassword1Errors(password1FieldErrors);
+    //     if (passsword2FieldErrors) setPassword2Errors(passsword2FieldErrors);
 
-        if (!emailErrors && !password1FieldErrors && !passsword2FieldErrors) {
-          toastContext?.error(
-            'An unknown error has occurred. Please try again'
-          );
-        }
-      } else {
-        toastContext?.error('An unknown error has occurred. Please try again');
-      }
-    } finally {
-      setLoading(false);
-    }
+    //     if (!emailErrors && !password1FieldErrors && !passsword2FieldErrors) {
+    //       toastContext?.error(
+    //         'An unknown error has occurred. Please try again'
+    //       );
+    //     }
+    //   } else {
+    //     toastContext?.error('An unknown error has occurred. Please try again');
+    //   }
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const handleOnKeyPress = (event: KeyboardEvent) => {

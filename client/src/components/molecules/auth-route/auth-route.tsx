@@ -1,18 +1,23 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../../../contexts/auth-context';
+import useAuth from '../../../hooks/use-auth';
 
 interface AuthRouteProps {
   element: JSX.Element;
 }
 
 const AuthRoute = ({ element }: AuthRouteProps) => {
-  const authContext = useContext(AuthContext);
+  const { loadingAuth, isAuthenticated, refreshAccessToken } = useAuth();
 
-  if (authContext?.loading) {
+  useEffect(() => {
+    refreshAccessToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (loadingAuth) {
     return <></>;
   } else {
-    if (authContext?.isAuthenticated) return element;
+    if (isAuthenticated) return element;
     else return <Navigate to="/login" />;
   }
 };
