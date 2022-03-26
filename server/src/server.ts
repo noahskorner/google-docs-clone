@@ -20,7 +20,16 @@ server.listen(env.PORT, () => {
 });
 
 io.on('connection', (socket) => {
+  const documentId = socket.handshake.query.documentId as string;
+  socket.join(documentId);
+
   socket.on('send-changes', (rawDraftContentState) => {
-    socket.broadcast.emit('receive-changes', rawDraftContentState);
+    socket.broadcast
+      .to(documentId)
+      .emit('receive-changes', rawDraftContentState);
+  });
+
+  socket.on('disconnect', () => {
+    socket.leave(documentId);
   });
 });
