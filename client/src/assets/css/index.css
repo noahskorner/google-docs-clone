@@ -81,4 +81,14 @@ input:focus {
   .sidebar-btn {
     @apply w-full px-4 py-1 flex justify-between items-center text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded;
   }
+
+  /* Arrows */
+  .arrow-up {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
+  }
 }
