@@ -1,11 +1,15 @@
 import { useContext } from 'react';
 import { AuthContext } from '../../../contexts/auth-context';
+import useRandomBackground from '../../../hooks/use-random-background';
 
 const UserDropdown = () => {
   const authContext = useContext(AuthContext);
+  const { backgroundColor } = useRandomBackground();
 
   return (
-    <button className="w-8 h-8 bg-green-800 text-white font-semibold flex justify-center items-center rounded-full hover:ring-2 flex-shrink-0 uppercase">
+    <button
+      className={`${backgroundColor} w-8 h-8 text-white font-semibold flex justify-center items-center rounded-full ring-2 flex-shrink-0 uppercase`}
+    >
       {authContext?.email && authContext?.email[0]}
     </button>
   );

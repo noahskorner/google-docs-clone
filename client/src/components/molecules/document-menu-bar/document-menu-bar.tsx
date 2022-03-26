@@ -5,6 +5,9 @@ import UserDropdown from '../../atoms/user-dropdown';
 import DocumentInterface from '../../../types/interfaces/document';
 import { ToastContext } from '../../../contexts/toast-context';
 import ShareDocumentModal from '../share-document-modal';
+import { AuthContext } from '../../../contexts/auth-context';
+import { DocumentContext } from '../../../contexts/document-context';
+import useRandomBackground from '../../../hooks/use-random-background';
 
 interface DocumentMenubarProps {
   saving: boolean;
@@ -23,7 +26,10 @@ const DocumentMenuBar = ({
 }: DocumentMenubarProps) => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const dropdownRef = useRef(null);
+  const { backgroundColor } = useRandomBackground();
   const toastContext = useContext(ToastContext);
+  const authContext = useContext(AuthContext);
+  const documentContext = useContext(DocumentContext);
 
   const handleTitleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const title = event.target.value;
@@ -34,8 +40,8 @@ const DocumentMenuBar = ({
     const title = event.target.value;
     await saveDocument(
       { title, ...document } as DocumentInterface,
-      (error: null | string | null) => {
-        toastContext?.error(error);
+      (error: null | string) => {
+        if (error !== null) toastContext?.error(error);
       }
     );
   };
@@ -47,6 +53,7 @@ const DocumentMenuBar = ({
         <Logo />
         <div className="flex flex-col">
           <input
+            maxLength={25}
             type="text"
             onBlur={(event) => handleTitleInputBlur(event)}
             onChange={(event) => handleTitleInputChange(event)}
@@ -121,10 +128,25 @@ const DocumentMenuBar = ({
       </div>
       {/* Right */}
       <div className="flex items-center flex-shrink-0 pl-3 gap-x-4">
-        {document !== null && (
+        {document !== null && document.userId === authContext?.id && (
           <ShareDocumentModal document={document} setDocument={setDocument} />
         )}
-        <UserDropdown />
+        <div className="flex items-center gap-x-2">
+          {documentContext?.currentUsers &&
+            Array.from(documentContext?.currentUsers)
+              .filter((currentUser) => currentUser !== authContext?.email)
+              .map((currentUser) => {
+                return (
+                  <div
+                    key={currentUser}
+                    className={`${backgroundColor} w-8 h-8 text-white font-semibold flex justify-center items-center rounded-full flex-shrink-0 uppercase ring-2`}
+                  >
+                    {currentUser[0]}
+                  </div>
+                );
+              })}
+          <UserDropdown />
+        </div>
       </div>
     </div>
   );

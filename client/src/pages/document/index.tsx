@@ -1,4 +1,4 @@
-import { Fragment, useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import DocumentHeader from '../../components/organisms/document-header';
 import useWindowSize from '../../hooks/use-window-size';
 import {
@@ -8,12 +8,15 @@ import {
   convertToRaw,
   convertFromRaw,
 } from 'draft-js';
-import io, { Socket } from 'socket.io-client';
+
 import { BASE_URL } from '../../services/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import DocumentInterface from '../../types/interfaces/document';
 import { ToastContext } from '../../contexts/toast-context';
 import useDocument from '../../hooks/use-document';
+import { AuthContext } from '../../contexts/auth-context';
+import { DocumentContext } from '../../contexts/document-context';
+import { io } from 'socket.io-client';
 
 const DEFAULT_SAVE_TIME = 1500;
 let saveInterval: null | NodeJS.Timer = null;
@@ -24,13 +27,15 @@ const Document = () => {
   const documentViewerHeight = `calc(${heightStr} - ${documentHeaderRef.current?.clientHeight}px)`;
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const editorRef = useRef<null | Editor>(null);
-  const [socket, setSocket] = useState<null | Socket>(null);
+  const socket = useRef<any>(null);
   const { id: documentId } = useParams();
   const toastContext = useContext(ToastContext);
+  const authContext = useContext(AuthContext);
   const { saving, loadDocument, saveDocument } = useDocument();
   const [delayedSave, setDelayedSave] = useState(false);
   const [document, setDocument] = useState<null | DocumentInterface>(null);
   const [documentRendered, setDocumentRendered] = useState(false);
+  const documentContext = useContext(DocumentContext);
   const navigate = useNavigate();
 
   const focusEditor = () => {
@@ -47,7 +52,7 @@ const Document = () => {
 
     setEditorState(editorState);
     const content = convertToRaw(editorState.getCurrentContent());
-    socket?.emit('send-changes', content);
+    socket.current.emit('send-changes', content);
     setDocument({
       ...document,
       content: JSON.stringify(content),
@@ -67,35 +72,7 @@ const Document = () => {
     }, DEFAULT_SAVE_TIME);
   };
 
-  // connect
-  useEffect(() => {
-    setSocket(io(BASE_URL));
-
-    socket?.connect();
-
-    return () => {
-      socket?.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // receive-changes
-  useEffect(() => {
-    if (socket == null) return;
-
-    const handler = (rawDraftContentState: RawDraftContentState) => {
-      const contentState = convertFromRaw(rawDraftContentState);
-      const newEditorState = EditorState.createWithContent(contentState);
-      setEditorState(newEditorState);
-    };
-
-    socket.on('receive-changes', handler);
-
-    return () => {
-      socket.off('receive-changes', handler);
-    };
-  }, [socket, editorState]);
-
+  // load document
   useEffect(() => {
     if (!documentId) return;
 
@@ -111,6 +88,7 @@ const Document = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentId]);
 
+  // set document content
   useEffect(() => {
     if (documentRendered || !document?.content) return;
 
@@ -128,42 +106,86 @@ const Document = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [document]);
 
+  // connect
+  useEffect(() => {
+    socket.current = io(BASE_URL, {
+      query: { documentId, accessToken: authContext?.accessToken },
+    }).connect();
+
+    return () => {
+      socket.current.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // receive-changes
+  useEffect(() => {
+    if (socket == null) return;
+
+    const handler = (rawDraftContentState: RawDraftContentState) => {
+      const contentState = convertFromRaw(rawDraftContentState);
+      const newEditorState = EditorState.createWithContent(contentState);
+      setEditorState(newEditorState);
+    };
+
+    socket.current.on('receive-changes', handler);
+
+    return () => {
+      socket.current.off('receive-changes', handler);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
+
+  // participant-update
+  useEffect(() => {
+    if (socket == null) return;
+
+    const handler = (currentUsers: Array<string>) => {
+      documentContext?.setCurrentUsers(new Set<string>(currentUsers));
+    };
+
+    socket.current.on('participant-update', handler);
+
+    return () => {
+      socket.current.off('participant-update', handler);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
+
   return (
-    <Fragment>
+    <div
+      style={{ height: heightStr }}
+      className="w-full h-full bg-gray-100 flex flex-col"
+    >
+      <DocumentHeader
+        saving={saving || delayedSave}
+        saveDocument={saveDocument}
+        document={document}
+        setDocumentTitle={setDocumentTitle}
+        setDocument={setDocument}
+        documentHeaderRef={documentHeaderRef}
+      />
       <div
-        style={{ height: heightStr }}
-        className="w-full h-full bg-gray-100 flex flex-col"
+        style={{
+          height: documentViewerHeight,
+        }}
+        className="w-full flex flex-col justify-start items-center overflow-hidden"
       >
-        <DocumentHeader
-          saving={saving || delayedSave}
-          saveDocument={saveDocument}
-          document={document}
-          setDocumentTitle={setDocumentTitle}
-          setDocument={setDocument}
-          documentHeaderRef={documentHeaderRef}
-        />
-        <div
-          style={{
-            height: documentViewerHeight,
-          }}
-          className="w-full flex flex-col justify-start items-center overflow-hidden"
-        >
-          <div className="h-full w-full overflow-auto space-y-4 flex flex-col items-center p-4">
-            <div
-              style={{ height: '1100px', width: '850px' }}
-              className="bg-white shadow-md flex-shrink-0 cursor-text p-12"
-              onClick={focusEditor}
-            >
-              <Editor
-                ref={editorRef}
-                editorState={editorState}
-                onChange={handleEditorChange}
-              />
-            </div>
+        <div className="h-full w-full overflow-auto space-y-4 flex flex-col items-center p-4">
+          <div
+            style={{ height: '1100px', width: '850px' }}
+            className="bg-white shadow-md flex-shrink-0 cursor-text p-12"
+            onClick={focusEditor}
+          >
+            <Editor
+              ref={editorRef}
+              editorState={editorState}
+              onChange={handleEditorChange}
+            />
           </div>
         </div>
       </div>
-    </Fragment>
+    </div>
   );
 };
 

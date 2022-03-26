@@ -11,27 +11,30 @@ import { AuthProvider } from './contexts/auth-context';
 import Login from './pages/login';
 import Create from './pages/document/create';
 import AuthRoute from './components/molecules/auth-route';
+import { DocumentProvider } from './contexts/document-context';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <ToastProvider>
-          <Routes>
-            <Route
-              path="/document/:id"
-              element={<AuthRoute element={<Document />} />}
-            />
-            <Route
-              path="/document/create"
-              element={<AuthRoute element={<Create />} />}
-            />
-            <Route
-              path="/"
-              element={<Navigate replace to="/document/create" />}
-            />
-            <Route path="/login" element={<Login />} />
-          </Routes>
+          <DocumentProvider>
+            <Routes>
+              <Route
+                path="/document/:id"
+                element={<AuthRoute element={<Document />} />}
+              />
+              <Route
+                path="/document/create"
+                element={<AuthRoute element={<Create />} />}
+              />
+              <Route
+                path="/"
+                element={<Navigate replace to="/document/create" />}
+              />
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          </DocumentProvider>
         </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
