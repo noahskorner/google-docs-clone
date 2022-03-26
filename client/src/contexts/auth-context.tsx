@@ -13,6 +13,7 @@ interface AuthInterface {
   loading: boolean;
   login: Function;
   refreshAccessToken: Function;
+  destroyAuth: Function;
 }
 
 export const AuthContext = createContext<AuthInterface | null>(null);
@@ -117,6 +118,7 @@ export const AuthProvider = ({ children }: AuthProviderInterface) => {
         loading,
         refreshAccessToken,
         login,
+        destroyAuth,
       }}
     >
       {children}
