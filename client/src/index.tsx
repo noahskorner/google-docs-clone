@@ -12,6 +12,9 @@ import Login from './pages/login';
 import Create from './pages/document/create';
 import AuthRoute from './components/molecules/auth-route';
 import { DocumentProvider } from './contexts/document-context';
+import Register from './pages/register';
+import VerifyEmail from './pages/user/verify-email';
+import ResetPassword from './pages/user/reset-password';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -33,6 +36,15 @@ ReactDOM.render(
                 element={<Navigate replace to="/document/create" />}
               />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route
+                path="/user/verify-email/:token"
+                element={<VerifyEmail />}
+              />
+              <Route
+                path="/user/reset-password/:token"
+                element={<ResetPassword />}
+              />
             </Routes>
           </DocumentProvider>
         </ToastProvider>

@@ -21,14 +21,13 @@ const login = (payload: LoginPayload) => {
 };
 
 interface RegisterPayload {
-  username: String;
   email: String;
   password1: String;
   password2: String;
 }
 
 const register = (payload: RegisterPayload) => {
-  return apiClient.post('auth/register', payload);
+  return apiClient.post('user', payload);
 };
 
 const refreshToken = (refreshToken: string) => {
@@ -107,6 +106,10 @@ const createDocumentUser = (
   );
 };
 
+const verifyEmail = (token: string) => {
+  return apiClient.put(`user/verify-email/${token}`);
+};
+
 const API = {
   login,
   register,
@@ -118,6 +121,7 @@ const API = {
   updateDocument,
   removeDocument,
   createDocumentUser,
+  verifyEmail,
 };
 
 export default API;

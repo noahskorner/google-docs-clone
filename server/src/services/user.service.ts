@@ -4,7 +4,6 @@ import { User } from '../db/models/user.model';
 import { mailService } from './mail.service';
 import { RefreshToken } from '../db/models/refresh-token.model';
 import env from '../config/env.config';
-import { UserRole } from '../db/models/user-role.model';
 
 class UserService {
   public findUserByEmail = async (email: string): Promise<User | null> => {
@@ -139,7 +138,7 @@ class UserService {
       from: 'noahskorner@gmail.com',
       to: user.email,
       subject: 'Reset your password!',
-      text: `${env.HOST}/user/password/${user.passwordResetToken}`,
+      text: `${env.FRONT_END_URL}/user/reset-email/${user.passwordResetToken}`,
     };
 
     await mailService.sendMail(mail);
@@ -150,7 +149,7 @@ class UserService {
       from: 'noahskorner@gmail.com',
       to: user.email,
       subject: 'Welcome to typescript-template!',
-      text: `${env.HOST}/user/verify-email/${user.verificationToken}`,
+      text: `${env.FRONT_END_URL}/user/verify-email/${user.verificationToken}`,
     };
 
     await mailService.sendMail(mail);

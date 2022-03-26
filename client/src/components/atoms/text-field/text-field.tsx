@@ -73,6 +73,7 @@ const TextField = ({
             />
             {type === 'password' && (
               <button
+                tabIndex={-1}
                 onClick={() => setShowPassword(!showPassword)}
                 className="h-full flex justify-center item-center p-2 text-slate-400"
               >

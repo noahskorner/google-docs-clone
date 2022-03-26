@@ -5,7 +5,7 @@ import { ToastContext } from '../../contexts/toast-context';
 import Logo from '../../components/atoms/logo';
 import validator from 'validator';
 import Spinner from '../../components/atoms/spinner';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/auth-context';
 
 const Login = () => {
@@ -84,6 +84,13 @@ const Login = () => {
             color="secondary"
             errors={emailErrors}
           />
+          <Link
+            tabIndex={-1}
+            to="/register"
+            className="text-sm hover:underline font-semibold text-blue-500 text-left"
+          >
+            Need an account?
+          </Link>
           <TextField
             value={password}
             onInput={handleOnInputPassword}
@@ -92,7 +99,10 @@ const Login = () => {
             color="secondary"
             errors={passwordErrors}
           />
-          <button className="text-sm hover:underline font-semibold text-blue-500 text-left">
+          <button
+            tabIndex={-1}
+            className="text-sm hover:underline font-semibold text-blue-500 text-left"
+          >
             Forgot Password?
           </button>
           <button

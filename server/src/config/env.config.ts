@@ -17,7 +17,8 @@ if (
   process.env.REFRESH_TOKEN_EXPIRATION === undefined ||
   process.env.VERIFY_EMAIL_SECRET === undefined ||
   process.env.PASSWORD_RESET_SECRET === undefined ||
-  process.env.PASSWORD_RESET_EXPIRATION === undefined
+  process.env.PASSWORD_RESET_EXPIRATION === undefined ||
+  process.env.FRONT_END_URL === undefined
 ) {
   throw new Error('Environment variables missing.');
 }
@@ -42,6 +43,7 @@ const env = {
   VERIFY_EMAIL_SECRET: process.env.VERIFY_EMAIL_SECRET,
   PASSWORD_RESET_SECRET: process.env.PASSWORD_RESET_SECRET,
   PASSWORD_RESET_EXPIRATION: process.env.PASSWORD_RESET_EXPIRATION,
+  FRONT_END_URL: process.env.FRONT_END_URL,
 };
 
 export default env;
