@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "serve": "NODE_ENV=development nodemon src/server.ts",
-    "start": "NODE_ENV=production node src/server.ts",
+    "build": "tsc",
+    "start": "NODE_ENV=development node dist/src/server.js",
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "pretty": "npx prettier --write ."
   },
@@ -51,5 +52,8 @@
     "sequelize": "^6.16.0",
     "sequelize-typescript": "^2.1.2",
     "socket.io": "^4.4.1"
+  },
+  "engines": {
+    "node": "14.17.5"
   }
 }

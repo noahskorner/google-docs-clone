@@ -7,6 +7,7 @@
     "rootDir": "./",
     "esModuleInterop": true,
     "strict": true,
-    "typeRoots": ["src/types/interfaces", "./node_modules/@types"]
+    "typeRoots": ["src/types/interfaces", "./node_modules/@types"],
+    "outDir": "dist"
   }
 }

@@ -4,4 +4,5 @@
 server/src/db/config.json
 client/build
 .DS_Store
+server/dist
 

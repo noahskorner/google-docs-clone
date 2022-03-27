@@ -1,0 +1,19 @@
+{
+  "name": "google-docs-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "git add . && git commit -m Heroku && git subtree push --prefix server heroku master"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noahskorner/google-docs-clone.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/noahskorner/google-docs-clone/issues"
+  },
+  "homepage": "https://github.com/noahskorner/google-docs-clone#readme"
+}
