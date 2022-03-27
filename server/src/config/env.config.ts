@@ -2,7 +2,7 @@ if (
   process.env.NODE_ENV === undefined ||
   process.env.HOST === undefined ||
   process.env.PORT === undefined ||
-  process.env.CONNECTION_STRING === undefined ||
+  process.env.DATABASE_URL === undefined ||
   process.env.USER === undefined ||
   process.env.PASSWORD === undefined ||
   process.env.DB_HOST === undefined ||
@@ -27,7 +27,7 @@ const env = {
   NODE_ENV: process.env.NODE_ENV,
   HOST: process.env.HOST,
   PORT: process.env.PORT,
-  CONNECTION_STRING: process.env.CONNECTION_STRING,
+  DATABASE_URL: process.env.DATABASE_URL,
   USER: process.env.USER,
   PASSWORD: process.env.PASSWORD,
   DB_HOST: process.env.DB_HOST,

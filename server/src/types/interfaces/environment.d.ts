@@ -4,7 +4,7 @@ declare global {
       NODE_ENV?: 'test' | 'development' | 'production';
       HOST?: string;
       PORT?: string;
-      CONNECTION_STRING?: string;
+      DATABASE_URL?: string;
       USER?: string;
       PASSWORD?: string;
       DB_HOST?: string;

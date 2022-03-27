@@ -8,7 +8,7 @@ const sequelize =
         dialect: 'postgres',
         logging: false,
       })
-    : new Sequelize(env.CONNECTION_STRING, {
+    : new Sequelize(env.DATABASE_URL, {
         dialect: 'postgres',
         dialectOptions: {
           ssl: {
