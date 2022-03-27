@@ -19,7 +19,10 @@ const DocumentsList = ({
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4  gap-4">
           {documents
             .sort((a, b) => {
-              return b.updatedAt.getTime() - a.updatedAt.getTime();
+              return (
+                new Date(b.updatedAt).getTime() -
+                new Date(a.updatedAt).getTime()
+              );
             })
             .map((document) => {
               return (

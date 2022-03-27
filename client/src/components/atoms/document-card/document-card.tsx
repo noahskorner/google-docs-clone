@@ -1,14 +1,8 @@
 import useAuth from '../../../hooks/use-auth';
 import DocumentInterface from '../../../types/interfaces/document';
-import { MouseEvent, useEffect, useRef } from 'react';
+import { MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DocumentMenuButton from '../document-menu-button';
-
-const DOCUMENT_MENU_CLASSES = [
-  'document-menu-btn-wrapper',
-  'document-menu-btn',
-  'document-menu-btn-option',
-];
 
 interface DocumentCardProps {
   document: DocumentInterface;
@@ -18,40 +12,44 @@ interface DocumentCardProps {
 const DocumentCard = ({ document, setDocuments }: DocumentCardProps) => {
   const { userId } = useAuth();
   const navigate = useNavigate();
-  const skeleton = useRef<Array<JSX.Element> | null>(null);
 
   const handleDocumentBtnClick = (
-    event: MouseEvent<HTMLButtonElement>,
+    event: MouseEvent<HTMLDivElement>,
     documentId: number
   ) => {
-    const classList = (event.target as HTMLButtonElement).classList;
-    if (!classList.contains('document-menu-btn'))
+    const classList = (event.target as HTMLDivElement).classList;
+    if (
+      !classList.contains(`document-menu-btn-${documentId}`) &&
+      !classList.contains('document-menu')
+    )
       navigate(`/document/${documentId}`);
   };
 
-  useEffect(() => {
-    skeleton.current = Array.from({ length: 18 }, (x, i) => i).map((i) => {
-      return (
-        <div
-          key={i}
-          style={{
-            width: `${Math.floor(Math.random() * 100)}%`,
-          }}
-          className="h-1 bg-gray-200"
-        ></div>
-      );
-    });
-  }, [skeleton]);
+  const skeleton = (
+    <>
+      {Array.from({ length: 18 }, (x, i) => i).map((i) => {
+        return (
+          <div
+            key={i}
+            style={{
+              width: `${Math.floor(Math.random() * 100)}%`,
+            }}
+            className="h-1 bg-gray-200"
+          ></div>
+        );
+      })}
+    </>
+  );
 
   return (
-    <button
+    <div
       onClick={(event) => handleDocumentBtnClick(event, document.id)}
       key={document.id}
-      className="text-left"
+      className="text-left cursor-pointer"
     >
       <div className="h-80 w-full border flex flex-col justify-between hover:border-blue-500 rounded">
         <div className="w-full h-full p-4 flex flex-col space-y-2">
-          {skeleton.current}
+          {skeleton}
         </div>
         <div className="w-full h-24 border-t p-3">
           <h6 className="text-sm max-w-full truncate">{document.title}</h6>
@@ -88,7 +86,7 @@ const DocumentCard = ({ document, setDocuments }: DocumentCardProps) => {
           </div>
         </div>
       </div>
-    </button>
+    </div>
   );
 };
 export default DocumentCard;

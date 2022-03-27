@@ -23,11 +23,19 @@ const DocumentEditor = () => {
   const [documentRendered, setDocumentRendered] = useState(false);
   const editorRef = useRef<null | Editor>(null);
   const { accessToken } = useAuth();
-  const { document, setCurrentUsers, setSaving, setDocument, saveDocument } =
-    useContext(DocumentContext);
+  const {
+    document,
+    saving,
+    setCurrentUsers,
+    setSaving,
+    setDocument,
+    saveDocument,
+  } = useContext(DocumentContext);
 
   const focusEditor = () => {
-    editorRef?.current?.focus();
+    if (editorRef === null || editorRef.current === null) return;
+
+    editorRef.current.focus();
   };
 
   // send-changes

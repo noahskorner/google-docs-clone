@@ -7,7 +7,6 @@ import validator from 'validator';
 import Spinner from '../../components/atoms/spinner';
 import { Link, useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
-import API from '../../services/api';
 import AuthService from '../../services/auth-service';
 
 const Register = () => {
