@@ -10,7 +10,7 @@ import {
 import DocumentInterface from '../../../types/interfaces/document';
 import Spinner from '../../atoms/spinner';
 import validator from 'validator';
-import PermissionEnum from '../../../enums/permission-enum';
+import PermissionEnum from '../../../types/enums/permission-enum';
 import SharedUsers from '../shared-users';
 import { DocumentContext } from '../../../contexts/document-context';
 import useAuth from '../../../hooks/use-auth';

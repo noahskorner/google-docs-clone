@@ -7,6 +7,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 import app from './app';
 import env from './config/env.config';
 import documentService from './services/document.service';
+import SocketEvent from './types/enums/socket-events-enum';
 
 const server = http.createServer(app);
 
@@ -44,15 +45,15 @@ io.on('connection', (socket) => {
               .fetchSockets()
               .then((clients) => {
                 io.sockets.in(documentId).emit(
-                  'participant-update',
+                  SocketEvent.CURRENT_USERS_UPDATE,
                   clients.map((client) => (client as any).username)
                 );
               });
 
-            socket.on('send-changes', (rawDraftContentState) => {
+            socket.on(SocketEvent.SEND_CHANGES, (rawDraftContentState) => {
               socket.broadcast
                 .to(documentId)
-                .emit('receive-changes', rawDraftContentState);
+                .emit(SocketEvent.RECEIVE_CHANGES, rawDraftContentState);
             });
 
             socket.on('disconnect', async () => {
@@ -62,7 +63,7 @@ io.on('connection', (socket) => {
                 .fetchSockets()
                 .then((clients) => {
                   io.sockets.in(documentId).emit(
-                    'participant-update',
+                    SocketEvent.CURRENT_USERS_UPDATE,
                     clients.map((client) => (client as any).username)
                   );
                 });

@@ -18,6 +18,7 @@ import {
 import { io } from 'socket.io-client';
 import useAuth from '../hooks/use-auth';
 import { BASE_URL } from '../services/api';
+import SocketEvent from '../types/enums/socket-events-enum';
 import DocumentInterface from '../types/interfaces/document';
 import { DocumentContext } from './document-context';
 import { ToastContext } from './toast-context';
@@ -71,7 +72,7 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
     editorRef.current.focus();
   };
 
-  // send-changes
+  // Send changes
   const handleEditorChange = (editorState: EditorState) => {
     setEditorState(editorState);
 
@@ -79,7 +80,7 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
 
     const content = convertToRaw(editorState.getCurrentContent());
 
-    socket.current.emit('send-changes', content);
+    socket.current.emit(SocketEvent.SEND_CHANGES, content);
     const updatedDocument = {
       ...document,
       content: JSON.stringify(content),
@@ -100,7 +101,7 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
     }, DEFAULT_SAVE_TIME);
   };
 
-  // set document content
+  // Load document content
   useEffect(() => {
     if (documentRendered || document === null || document.content === null)
       return;
@@ -119,7 +120,7 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [document]);
 
-  // connect
+  // Connect socket
   useEffect(() => {
     if (
       document === null ||
@@ -136,14 +137,14 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [document, accessToken, socket]);
 
-  // disconnect
+  // Disconnect socket
   useEffect(() => {
     return () => {
       socket.current.disconnect();
     };
   }, []);
 
-  // receive-changes
+  // Receive changes
   useEffect(() => {
     if (socket.current === null) return;
 
@@ -153,15 +154,15 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
       setEditorState(newEditorState);
     };
 
-    socket.current.on('receive-changes', handler);
+    socket.current.on(SocketEvent.RECEIVE_CHANGES, handler);
 
     return () => {
-      socket.current.off('receive-changes', handler);
+      socket.current.off(SocketEvent.RECEIVE_CHANGES, handler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket.current]);
 
-  // participant-update
+  // Current users updated
   useEffect(() => {
     if (socket.current === null) return;
 
@@ -169,10 +170,10 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
       setCurrentUsers(new Set<string>(currentUsers));
     };
 
-    socket.current.on('participant-update', handler);
+    socket.current.on(SocketEvent.CURRENT_USERS_UPDATE, handler);
 
     return () => {
-      socket.current.off('participant-update', handler);
+      socket.current.off(SocketEvent.CURRENT_USERS_UPDATE, handler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket.current]);

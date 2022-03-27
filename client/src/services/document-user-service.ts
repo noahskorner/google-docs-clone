@@ -1,4 +1,4 @@
-import PermissionEnum from '../enums/permission-enum';
+import PermissionEnum from '../types/enums/permission-enum';
 import API from './api';
 
 const DocumentUserService = {
