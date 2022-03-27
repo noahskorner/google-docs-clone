@@ -36,7 +36,7 @@ const UserDropdown = () => {
         children={
           <div
             ref={dropdownRef}
-            className="absolute top-full right-0 z-10 w-52 bg-white py-2 rounded-sm shadow-lg border"
+            className="absolute top-full mt-1 right-0 z-10 w-52 bg-white py-2 rounded-sm shadow-lg border"
           >
             <button
               onClick={logoutUser}

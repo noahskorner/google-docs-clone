@@ -1,10 +1,14 @@
-import { DotsVerticalIcon } from '@heroicons/react/outline';
 import useAuth from '../../../hooks/use-auth';
 import DocumentInterface from '../../../types/interfaces/document';
-import { MouseEvent, useContext, useEffect, useRef, useState } from 'react';
+import { MouseEvent, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DocumentService from '../../../services/document-service';
-import { ToastContext } from '../../../contexts/toast-context';
+import DocumentMenuButton from '../document-menu-button';
+
+const DOCUMENT_MENU_CLASSES = [
+  'document-menu-btn-wrapper',
+  'document-menu-btn',
+  'document-menu-btn-option',
+];
 
 interface DocumentCardProps {
   document: DocumentInterface;
@@ -12,9 +16,7 @@ interface DocumentCardProps {
 }
 
 const DocumentCard = ({ document, setDocuments }: DocumentCardProps) => {
-  const [loading, setLoading] = useState(false);
-  const { userId, accessToken } = useAuth();
-  const toastContext = useContext(ToastContext);
+  const { userId } = useAuth();
   const navigate = useNavigate();
   const skeleton = useRef<Array<JSX.Element> | null>(null);
 
@@ -25,23 +27,6 @@ const DocumentCard = ({ document, setDocuments }: DocumentCardProps) => {
     const classList = (event.target as HTMLButtonElement).classList;
     if (!classList.contains('document-menu-btn'))
       navigate(`/document/${documentId}`);
-  };
-
-  const handleDocumentMenuBtnClick = async (id: number) => {
-    if (accessToken === null) return;
-
-    setLoading(true);
-
-    try {
-      await DocumentService.remove(accessToken, id);
-      setDocuments((allDocuments: Array<DocumentInterface>) =>
-        allDocuments.filter((document) => document.id !== id)
-      );
-    } catch (error) {
-      toastContext?.error('Unable to remove document. Please try again.');
-    } finally {
-      setLoading(false);
-    }
   };
 
   useEffect(() => {
@@ -56,7 +41,7 @@ const DocumentCard = ({ document, setDocuments }: DocumentCardProps) => {
         ></div>
       );
     });
-  }, []);
+  }, [skeleton]);
 
   return (
     <button
@@ -95,12 +80,10 @@ const DocumentCard = ({ document, setDocuments }: DocumentCardProps) => {
               </p>
             </div>
             {document.userId === userId && (
-              <span
-                onClick={() => handleDocumentMenuBtnClick(document.id)}
-                className="hover:bg-gray-100 relative left-2 w-8 h-8 rounded-full flex items-center justify-center document-menu-btn"
-              >
-                <DotsVerticalIcon className="w-5 h-5 document-menu-btn" />
-              </span>
+              <DocumentMenuButton
+                documentId={document.id}
+                setDocuments={setDocuments}
+              />
             )}
           </div>
         </div>
