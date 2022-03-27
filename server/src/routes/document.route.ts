@@ -15,12 +15,17 @@ router.put(
   documentController.update
 );
 router.post('/', authenticate, documentController.create);
-router.delete('/:id', authenticate, documentController.remove);
+router.delete('/:id', authenticate, documentController.delete);
 router.post(
   '/:id/share',
   authenticate,
   shareValidator.create,
   shareController.create
+);
+router.delete(
+  '/:documentId/share/:userId',
+  authenticate,
+  shareController.delete
 );
 
 export default router;

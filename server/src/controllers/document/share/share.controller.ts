@@ -36,6 +36,35 @@ class ShareController {
 
     return res.sendStatus(201);
   });
+  public delete = catchAsync(async (req: Request, res: Response) => {
+    const err = validationResult(req);
+    if (!err.isEmpty()) {
+      return res.status(400).json(err);
+    }
+
+    const { documentId, userId } = req.params;
+
+    const document = await Document.findOne({
+      where: {
+        id: documentId,
+        userId: req.user?.id,
+      },
+    });
+    if (!document) return res.sendStatus(400);
+
+    const query = {
+      where: {
+        documentId,
+        userId,
+      },
+    };
+    const documentUser = await DocumentUser.findOne(query);
+    if (!documentUser) return res.sendStatus(400);
+
+    await DocumentUser.destroy(query);
+
+    return res.sendStatus(200);
+  });
 }
 const shareController = new ShareController();
 

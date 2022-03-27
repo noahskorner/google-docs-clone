@@ -75,7 +75,7 @@ class DocumentController {
     return res.sendStatus(200);
   });
 
-  public remove = catchAsync(async (req: Request, res: Response) => {
+  public delete = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
 
     await Document.destroy({
