@@ -6,7 +6,7 @@ import ToastInterface from '../types/interfaces/toast';
 
 const TOAST_TIMEOUT = 5000; // 5s
 
-interface ToastManagerInterface {
+interface ToastContextInterface {
   toasts: Array<ToastInterface>;
   addToast: (
     {
@@ -37,7 +37,7 @@ const defaultValues = {
   success: () => {},
 };
 
-export const ToastContext = createContext<ToastManagerInterface>(defaultValues);
+export const ToastContext = createContext<ToastContextInterface>(defaultValues);
 
 interface ToastProviderInterface {
   children: JSX.Element;

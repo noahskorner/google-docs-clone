@@ -15,38 +15,44 @@ import { DocumentProvider } from './contexts/document-context';
 import Register from './pages/register';
 import VerifyEmail from './pages/user/verify-email';
 import ResetPassword from './pages/user/reset-password';
+import { EditorProvider } from './contexts/editor-context';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <ToastProvider>
-          <DocumentProvider>
-            <Routes>
-              <Route
-                path="/document/:id"
-                element={<AuthRoute element={<Document />} />}
-              />
-              <Route
-                path="/document/create"
-                element={<AuthRoute element={<Create />} />}
-              />
-              <Route
-                path="/"
-                element={<Navigate replace to="/document/create" />}
-              />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route
-                path="/user/verify-email/:token"
-                element={<VerifyEmail />}
-              />
-              <Route
-                path="/user/reset-password/:token"
-                element={<ResetPassword />}
-              />
-            </Routes>
-          </DocumentProvider>
+          <Routes>
+            <Route
+              path="/document/:id"
+              element={
+                <AuthRoute
+                  element={
+                    <DocumentProvider>
+                      <EditorProvider>
+                        <Document />
+                      </EditorProvider>
+                    </DocumentProvider>
+                  }
+                />
+              }
+            />
+            <Route
+              path="/document/create"
+              element={<AuthRoute element={<Create />} />}
+            />
+            <Route
+              path="/"
+              element={<Navigate replace to="/document/create" />}
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/user/verify-email/:token" element={<VerifyEmail />} />
+            <Route
+              path="/user/reset-password/:token"
+              element={<ResetPassword />}
+            />
+          </Routes>
         </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
