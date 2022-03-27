@@ -8,7 +8,7 @@ import DocumentInterface from '../../../types/interfaces/document';
 import Spinner from '../spinner';
 
 const CreateDocumentButton = () => {
-  const toastContext = useContext(ToastContext);
+  const { error } = useContext(ToastContext);
   const { accessToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -23,8 +23,8 @@ const CreateDocumentButton = () => {
       const { id } = response.data as DocumentInterface;
 
       navigate(`/document/${id}`);
-    } catch (error) {
-      toastContext?.error('Unable to create a new document. Please try again.');
+    } catch (err) {
+      error('Unable to create a new document. Please try again.');
     } finally {
       setLoading(false);
     }

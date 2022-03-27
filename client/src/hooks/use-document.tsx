@@ -7,7 +7,7 @@ import useAuth from './use-auth';
 
 const useDocument = (documentId: number) => {
   const { accessToken } = useAuth();
-  const toastContext = useContext(ToastContext);
+  const { error } = useContext(ToastContext);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Array<string>>([]);
   const [document, setDocument] = useState<null | DocumentInterface>(null);
@@ -48,8 +48,8 @@ const useDocument = (documentId: number) => {
 
   useEffect(() => {
     if (errors.length) {
-      errors.forEach((error) => {
-        toastContext?.error(error);
+      errors.forEach((err) => {
+        error(err);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

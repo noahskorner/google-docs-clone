@@ -8,7 +8,7 @@ const useDocuments = () => {
   const { accessToken } = useAuth();
   const [documents, setDocuments] = useState<Array<DocumentInterface>>([]);
   const [loading, setLoading] = useState(false);
-  const toastContext = useContext(ToastContext);
+  const { error } = useContext(ToastContext);
 
   const loadDocuments = async (accessToken: string) => {
     setLoading(true);
@@ -16,8 +16,8 @@ const useDocuments = () => {
     try {
       const response = await DocumentService.list(accessToken);
       setDocuments(response.data as Array<DocumentInterface>);
-    } catch (error: any) {
-      toastContext?.error('Unable to load documents. Please try again.');
+    } catch (err) {
+      error('Unable to load documents. Please try again.');
     } finally {
       setLoading(false);
     }

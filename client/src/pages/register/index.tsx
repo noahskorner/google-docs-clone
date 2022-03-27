@@ -19,7 +19,7 @@ const Register = () => {
   const [password2, setPassword2] = useState('');
   const [password2Errors, setPassword2Errors] = useState<Array<string>>([]);
   const navigate = useNavigate();
-  const toastContext = useContext(ToastContext);
+  const { addToast, error } = useContext(ToastContext);
 
   const validate = () => {
     setEmailErrors([]);
@@ -63,15 +63,15 @@ const Register = () => {
         password2,
       });
 
-      toastContext?.addToast({
+      addToast({
         title: `Successfully registered ${email}!`,
         body: 'Please check your inbox to verify your email address',
         color: 'success',
       });
       navigate('/login');
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const { response } = error as AxiosError;
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const { response } = err as AxiosError;
         const errors = (response as any).data.errors;
         const emailFieldErrors = errors
           .filter((error: any) => error.param === 'email')
@@ -88,12 +88,10 @@ const Register = () => {
         if (passsword2FieldErrors) setPassword2Errors(passsword2FieldErrors);
 
         if (!emailErrors && !password1FieldErrors && !passsword2FieldErrors) {
-          toastContext?.error(
-            'An unknown error has occurred. Please try again'
-          );
+          error('An unknown error has occurred. Please try again');
         }
       } else {
-        toastContext?.error('An unknown error has occurred. Please try again');
+        error('An unknown error has occurred. Please try again');
       }
     } finally {
       setLoading(false);

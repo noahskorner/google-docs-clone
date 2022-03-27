@@ -19,18 +19,12 @@ let saveInterval: null | NodeJS.Timer = null;
 const DocumentEditor = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const socket = useRef<any>(null);
-  const toastContext = useContext(ToastContext);
+  const { error } = useContext(ToastContext);
   const [documentRendered, setDocumentRendered] = useState(false);
   const editorRef = useRef<null | Editor>(null);
   const { accessToken } = useAuth();
-  const {
-    document,
-    saving,
-    setCurrentUsers,
-    setSaving,
-    setDocument,
-    saveDocument,
-  } = useContext(DocumentContext);
+  const { document, setCurrentUsers, setSaving, setDocument, saveDocument } =
+    useContext(DocumentContext);
 
   const focusEditor = () => {
     if (editorRef === null || editorRef.current === null) return;
@@ -76,7 +70,7 @@ const DocumentEditor = () => {
       const newEditorState = EditorState.createWithContent(contentState);
       setEditorState(newEditorState);
     } catch {
-      toastContext?.error('Error when loading document.');
+      error('Error when loading document.');
     } finally {
       setDocumentRendered(true);
     }

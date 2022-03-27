@@ -16,7 +16,7 @@ const Login = () => {
   const [passwordErrors, setPasswordErrors] = useState<Array<string>>([]);
   const { loading, errors, login } = useAuth();
   const navigate = useNavigate();
-  const toastContext = useContext(ToastContext);
+  const { success, error } = useContext(ToastContext);
 
   const validate = () => {
     setEmailErrors([]);
@@ -41,13 +41,13 @@ const Login = () => {
     await login(email, password);
 
     if (errors.length) {
-      errors.forEach((error) => {
-        toastContext?.error(error);
+      errors.forEach((err) => {
+        error(err);
       });
       setEmailErrors(['']);
       setPasswordErrors(['']);
     } else {
-      toastContext?.success('Successfully logged in!');
+      success('Successfully logged in!');
       navigate('/document/create');
     }
   };

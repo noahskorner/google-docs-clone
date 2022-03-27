@@ -1,29 +1,67 @@
 import { createContext, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import ToastManager from '../components/organisms/toast-manager';
+import ActionInterface from '../types/interfaces/action';
 import ToastInterface from '../types/interfaces/toast';
 
 const TOAST_TIMEOUT = 5000; // 5s
 
 interface ToastManagerInterface {
   toasts: Array<ToastInterface>;
-  addToast: Function;
-  removeToast: Function;
-  error: Function;
-  success: Function;
+  addToast: (
+    {
+      id,
+      color,
+      title,
+      body,
+      actions,
+    }: {
+      id?: string;
+      color?: ToastInterface['color'];
+      title?: string;
+      body?: string;
+      actions?: Array<ActionInterface>;
+    },
+    duration?: number
+  ) => void;
+  removeToast: (id: string) => void;
+  error: (title: string) => void;
+  success: (title: string) => void;
 }
 
-export const ToastContext = createContext<ToastManagerInterface | null>(null);
+const defaultValues = {
+  toasts: new Array<ToastInterface>(),
+  addToast: () => {},
+  removeToast: () => {},
+  error: () => {},
+  success: () => {},
+};
+
+export const ToastContext = createContext<ToastManagerInterface>(defaultValues);
 
 interface ToastProviderInterface {
   children: JSX.Element;
 }
 
 export const ToastProvider = ({ children }: ToastProviderInterface) => {
-  const [toasts, setToasts] = useState<Array<ToastInterface>>([]);
+  const [toasts, setToasts] = useState<Array<ToastInterface>>(
+    defaultValues.toasts
+  );
 
   const addToast = (
-    { id = uuid(), color = 'primary', title, body, actions }: ToastInterface,
+    {
+      id = uuid(),
+      color = 'primary',
+      title,
+      body,
+      actions,
+    }: {
+      id?: string;
+      color?: ToastInterface['color'];
+      title?: string;
+      body?: string;
+      actions?: Array<ActionInterface>;
+    },
     duration = TOAST_TIMEOUT
   ) => {
     setToasts((toasts) => [

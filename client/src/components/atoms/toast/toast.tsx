@@ -11,11 +11,11 @@ const TOAST_CLASSES = {
 };
 
 const Toast = ({ id, color, title, body, actions }: ToastInterface) => {
-  const toastContext = useContext(ToastContext);
+  const { removeToast } = useContext(ToastContext);
 
   const handleToastClick = (e: MouseEvent<HTMLDivElement>) => {
     const classListArr = Array.from((e.target as HTMLButtonElement).classList);
-    if (!classListArr.includes('action')) toastContext?.removeToast(id);
+    if (!classListArr.includes('action')) removeToast(id);
   };
 
   return (

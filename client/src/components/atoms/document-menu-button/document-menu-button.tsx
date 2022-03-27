@@ -18,7 +18,7 @@ const DocumentMenuButton = ({
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const toastContext = useContext(ToastContext);
+  const { error } = useContext(ToastContext);
 
   const handleMenuBtnBlur = (event: FocusEvent<HTMLButtonElement>) => {
     const classList = (event.target as HTMLButtonElement).classList;
@@ -38,8 +38,8 @@ const DocumentMenuButton = ({
       setDocuments((allDocuments: Array<DocumentInterface>) =>
         allDocuments.filter((document) => document.id !== documentId)
       );
-    } catch (error) {
-      toastContext?.error('Unable to remove document. Please try again.');
+    } catch (err) {
+      error('Unable to remove document. Please try again.');
     } finally {
       setLoading(false);
     }

@@ -6,12 +6,12 @@ import AuthService from '../../services/auth-service';
 
 const VerifyEmail = () => {
   const { token } = useParams();
-  const toastContext = useContext(ToastContext);
+  const { addToast, error } = useContext(ToastContext);
   const [children, setChildren] = useState(<>Loading...</>);
 
   const verifyEmail = async () => {
     if (token === undefined) {
-      toastContext?.error('This token is invalid.');
+      error('This token is invalid.');
       setChildren(<Navigate to="/login" />);
       return;
     }
@@ -19,16 +19,16 @@ const VerifyEmail = () => {
     try {
       await AuthService.verifyEmail(token);
 
-      toastContext?.addToast({
+      addToast({
         title: 'Successfully verified your email address!',
         body: 'You may now login.',
         color: 'success',
       });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toastContext?.error('An unknown error has occurred. Please try again');
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        error('An unknown error has occurred. Please try again');
       } else {
-        toastContext?.error('An unknown error has occurred. Please try again');
+        error('An unknown error has occurred. Please try again');
       }
     } finally {
       setChildren(<Navigate to="/login" />);

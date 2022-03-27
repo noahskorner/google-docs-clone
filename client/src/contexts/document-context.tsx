@@ -49,7 +49,7 @@ interface DocumentProviderInterface {
 }
 
 export const DocumentProvider = ({ children }: DocumentProviderInterface) => {
-  const toastContext = useContext(ToastContext);
+  const { error } = useContext(ToastContext);
   const { accessToken } = useAuth();
   const [document, setDocument] = useState<null | DocumentInterface>(
     defaultValues.document
@@ -80,8 +80,8 @@ export const DocumentProvider = ({ children }: DocumentProviderInterface) => {
 
   useEffect(() => {
     if (errors.length) {
-      errors.forEach((error) => {
-        toastContext?.error(error);
+      errors.forEach((err) => {
+        error(err);
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

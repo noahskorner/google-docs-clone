@@ -9,13 +9,13 @@ const UserDropdown = () => {
   const { backgroundColor } = useRandomBackground();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
-  const toastContext = useContext(ToastContext);
+  const { success } = useContext(ToastContext);
   const { email, logout } = useAuth();
   const navigate = useNavigate();
 
   const logoutUser = async () => {
     await logout();
-    toastContext?.success('Successfully logged out!');
+    success('Successfully logged out!');
     navigate('/login');
   };
 

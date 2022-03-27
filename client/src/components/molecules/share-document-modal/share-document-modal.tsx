@@ -23,7 +23,7 @@ const ShareDocumentModal = () => {
   const copyLinkInputRef = useRef<null | HTMLInputElement>(null);
   const [email, setEmail] = useState<null | string>(null);
   const { accessToken } = useAuth();
-  const toastContext = useContext(ToastContext);
+  const { success, error } = useContext(ToastContext);
   const [loading, setLoading] = useState(false);
 
   const shareDocument = async () => {
@@ -45,7 +45,7 @@ const ShareDocumentModal = () => {
 
     try {
       await DocumentUserService.create(accessToken, payload);
-      toastContext?.success(`Successfully shared document with ${email}!`);
+      success(`Successfully shared document with ${email}!`);
 
       setDocument({
         ...document,
@@ -61,10 +61,8 @@ const ShareDocumentModal = () => {
         ],
       } as DocumentInterface);
       setEmail('');
-    } catch (error) {
-      toastContext?.error(
-        `Unable to share this document with ${email}. Please try again`
-      );
+    } catch (err) {
+      error(`Unable to share this document with ${email}. Please try again`);
     } finally {
       setLoading(false);
     }

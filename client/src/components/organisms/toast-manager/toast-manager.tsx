@@ -5,7 +5,7 @@ import useWindowSize from '../../../hooks/use-window-size';
 import Toast from '../../atoms/toast';
 
 const ToastManager = () => {
-  const toastContext = useContext(ToastContext);
+  const { toasts } = useContext(ToastContext);
   const { heightStr } = useWindowSize();
 
   return (
@@ -14,7 +14,7 @@ const ToastManager = () => {
       style={{ maxHeight: `calc(${heightStr} - 2rem)` }}
     >
       <TransitionGroup className="space-y-2">
-        {toastContext?.toasts.reverse().map((toast) => {
+        {toasts.reverse().map((toast) => {
           return (
             <CSSTransition
               key={toast.id}
