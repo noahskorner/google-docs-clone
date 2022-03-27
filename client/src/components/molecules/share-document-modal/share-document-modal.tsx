@@ -16,6 +16,7 @@ import { DocumentContext } from '../../../contexts/document-context';
 import useAuth from '../../../hooks/use-auth';
 import { ToastContext } from '../../../contexts/toast-context';
 import DocumentUserService from '../../../services/document-user-service';
+import DocumentUser from '../../../types/interfaces/document-user';
 
 const ShareDocumentModal = () => {
   const { document, saving, saveDocument, setDocument } =
@@ -44,24 +45,18 @@ const ShareDocumentModal = () => {
     setLoading(true);
 
     try {
-      await DocumentUserService.create(accessToken, payload);
-      success(`Successfully shared document with ${email}!`);
+      const response = await DocumentUserService.create(accessToken, payload);
+      const documentUser = response.data as DocumentUser;
+      documentUser.user = { email };
 
+      success(`Successfully shared document with ${email}!`);
       setDocument({
         ...document,
-        users: [
-          ...document.users,
-          {
-            permission: PermissionEnum.EDIT,
-            documentId: document.id,
-            user: {
-              email,
-            },
-          },
-        ],
+        users: [...document.users, documentUser],
       } as DocumentInterface);
       setEmail('');
     } catch (err) {
+      console.log(err);
       error(`Unable to share this document with ${email}. Please try again`);
     } finally {
       setLoading(false);
@@ -98,6 +93,12 @@ const ShareDocumentModal = () => {
 
     saveDocument(updatedDocument);
   };
+
+  const alreadyShared =
+    document === null ||
+    (document !== null &&
+      document.users.filter((documentUser) => documentUser.user.email === email)
+        .length > 0);
 
   const restrictedAccessBtn = (
     <div className="space-y-1">
@@ -182,12 +183,21 @@ const ShareDocumentModal = () => {
                 placeholder="Enter email"
                 className="border-b border-blue-500 rounded-t-md p-4 w-full bg-gray-100  font-medium"
               />
-              <SharedUsers documentUsers={document.users} />
+              <SharedUsers
+                documentUsers={document.users}
+                setDocument={setDocument}
+              />
               <div className="w-full flex justify-end space-x-2">
                 <button
                   onClick={handleShareBtnClick}
+                  disabled={
+                    loading ||
+                    email === null ||
+                    !validator.isEmail(email) ||
+                    alreadyShared
+                  }
                   className={`${
-                    email === null || !validator.isEmail(email)
+                    email === null || !validator.isEmail(email) || alreadyShared
                       ? 'btn-disabled'
                       : 'btn-primary'
                   } px-6`}

@@ -28,13 +28,13 @@ class ShareController {
     });
     if (!sharedUser) return res.sendStatus(400);
 
-    await DocumentUser.create({
+    const documentUser = await DocumentUser.create({
       documentId: id,
       userId: sharedUser.id,
       permission: permission,
     });
 
-    return res.sendStatus(201);
+    return res.status(201).json(documentUser);
   });
   public delete = catchAsync(async (req: Request, res: Response) => {
     const err = validationResult(req);

@@ -1,15 +1,52 @@
+import { Dispatch, SetStateAction, useContext, useState } from 'react';
+import { DocumentContext } from '../../../contexts/document-context';
+import { ToastContext } from '../../../contexts/toast-context';
 import useAuth from '../../../hooks/use-auth';
 import useRandomBackground from '../../../hooks/use-random-background';
+import DocumentUserService from '../../../services/document-user-service';
+import DocumentInterface from '../../../types/interfaces/document';
 import DocumentUser from '../../../types/interfaces/document-user';
 
 interface SharedUsersProps {
   documentUsers: Array<DocumentUser>;
+  setDocument: Dispatch<SetStateAction<DocumentInterface | null>>;
 }
 
-const SharedUsers = ({ documentUsers }: SharedUsersProps) => {
+const SharedUsers = ({ documentUsers, setDocument }: SharedUsersProps) => {
   const { backgroundColor } = useRandomBackground();
   const { backgroundColor: sharedUserBackgroundColor } = useRandomBackground();
-  const { email } = useAuth();
+  const { accessToken, email } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { addToast } = useContext(ToastContext);
+  const { document } = useContext(DocumentContext);
+
+  const removeDocumentUser = async (payload: {
+    documentId: number;
+    userId: number;
+  }) => {
+    if (!accessToken) return;
+
+    setLoading(true);
+
+    try {
+      await DocumentUserService.delete(accessToken, payload);
+
+      setDocument({
+        ...document,
+        users: document?.users.filter(
+          (documentUser) => documentUser.userId !== payload.userId
+        ) as Array<DocumentUser>,
+      } as DocumentInterface);
+    } catch {
+      addToast({
+        color: 'danger',
+        title: 'Unable to remove user',
+        body: 'Please try again.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -38,6 +75,18 @@ const SharedUsers = ({ documentUsers }: SharedUsersProps) => {
               </div>
               <p className="font-medium">{documentUser.user.email}</p>
             </div>
+            <button
+              onClick={() =>
+                removeDocumentUser({
+                  documentId: documentUser.documentId,
+                  userId: documentUser.userId,
+                })
+              }
+              disabled={loading}
+              className="font-semibold text-blue-600 p-2 hover:bg-blue-50 rounded-md"
+            >
+              Remove
+            </button>
           </div>
         );
       })}

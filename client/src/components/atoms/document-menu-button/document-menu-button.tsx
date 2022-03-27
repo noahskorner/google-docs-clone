@@ -34,12 +34,12 @@ const DocumentMenuButton = ({
     setLoading(true);
 
     try {
-      await DocumentService.remove(accessToken, documentId);
+      await DocumentService.delete(accessToken, documentId);
       setDocuments((allDocuments: Array<DocumentInterface>) =>
         allDocuments.filter((document) => document.id !== documentId)
       );
     } catch (err) {
-      error('Unable to remove document. Please try again.');
+      error('Unable to delete document. Please try again.');
     } finally {
       setLoading(false);
     }

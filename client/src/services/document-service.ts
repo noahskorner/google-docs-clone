@@ -26,7 +26,7 @@ const DocumentService = {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
   },
-  remove: (accessToken: string, documentId: number) => {
+  delete: (accessToken: string, documentId: number) => {
     return API.delete(`document/${documentId}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });

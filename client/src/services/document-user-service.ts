@@ -10,6 +10,17 @@ const DocumentUserService = {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
   },
+  delete: (
+    accessToken: string,
+    payload: { documentId: number; userId: number }
+  ) => {
+    return API.delete(
+      `document/${payload.documentId}/share/${payload.userId}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+  },
 };
 
 export default DocumentUserService;
