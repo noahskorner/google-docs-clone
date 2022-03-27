@@ -1,13 +1,9 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/outline';
-import {
-  convertFromRaw,
-  convertToRaw,
-  EditorState,
-  RawDraftContentState,
-} from 'draft-js';
+import { EditorState } from 'draft-js';
 import { useContext } from 'react';
 import { EditorContext } from '../../../contexts/editor-context';
 import IconButton from '../../atoms/icon-button';
+import FontSelect from '../../atoms/font-select';
 
 const EditorToolbar = () => {
   const { editorState, setEditorState } = useContext(EditorContext);
@@ -32,6 +28,8 @@ const EditorToolbar = () => {
         icon={<ArrowRightIcon className="h-4 w-4" />}
         tooltip="Redo"
       />
+      <div className="h-5 border-l border-l-gray-300 mx-2"></div>
+      <FontSelect />
     </div>
   );
 };

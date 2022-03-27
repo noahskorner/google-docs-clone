@@ -4,6 +4,7 @@ import './assets/css/index.css';
 import './assets/css/transitions.css';
 import './assets/css/spinners.css';
 import './assets/css/toasts.css';
+import './assets/css/fonts.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Document from './pages/document';
 import { ToastProvider } from './contexts/toast-context';

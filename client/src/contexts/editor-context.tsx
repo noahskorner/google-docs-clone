@@ -16,6 +16,7 @@ import {
   useState,
 } from 'react';
 import { io } from 'socket.io-client';
+import { FONTS } from '../components/atoms/font-select';
 import useAuth from '../hooks/use-auth';
 import { BASE_URL } from '../services/api';
 import SocketEvent from '../types/enums/socket-events-enum';
@@ -32,6 +33,8 @@ interface EditorContextInterface {
   editorRef: null | MutableRefObject<null | Editor>;
   handleEditorChange: (editorState: EditorState) => void;
   focusEditor: () => void;
+  currentFont: string;
+  setCurrentFont: Dispatch<SetStateAction<string>>;
 }
 
 const defaultValues = {
@@ -43,6 +46,8 @@ const defaultValues = {
   editorRef: null,
   handleEditorChange: () => {},
   focusEditor: () => {},
+  currentFont: FONTS[0],
+  setCurrentFont: () => {},
 };
 
 export const EditorContext =
@@ -57,9 +62,12 @@ let saveInterval: null | NodeJS.Timer = null;
 
 export const EditorProvider = ({ children }: EditorProviderInterface) => {
   const [editorState, setEditorState] = useState(defaultValues.editorState);
-  const socket = useRef<any>(null);
-  const [documentRendered, setDocumentRendered] = useState(false);
-  const editorRef = useRef<null | Editor>(null);
+  const socket = useRef<any>(defaultValues.socket);
+  const [documentRendered, setDocumentRendered] = useState(
+    defaultValues.documentRendered
+  );
+  const editorRef = useRef<null | Editor>(defaultValues.editorRef);
+  const [currentFont, setCurrentFont] = useState(defaultValues.currentFont);
 
   const { document, setCurrentUsers, setSaving, setDocument, saveDocument } =
     useContext(DocumentContext);
@@ -185,10 +193,12 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
         socket,
         documentRendered,
         editorRef,
+        currentFont,
         setEditorState,
         setDocumentRendered,
         handleEditorChange,
         focusEditor,
+        setCurrentFont,
       }}
     >
       {children}
