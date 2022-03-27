@@ -78,6 +78,7 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
     if (socket === null) return;
 
     const content = convertToRaw(editorState.getCurrentContent());
+
     socket.current.emit('send-changes', content);
     const updatedDocument = {
       ...document,
@@ -144,7 +145,7 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
 
   // receive-changes
   useEffect(() => {
-    if (socket === null || socket.current === null) return;
+    if (socket.current === null) return;
 
     const handler = (rawDraftContentState: RawDraftContentState) => {
       const contentState = convertFromRaw(rawDraftContentState);
@@ -158,11 +159,11 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
       socket.current.off('receive-changes', handler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [socket.current]);
 
   // participant-update
   useEffect(() => {
-    if (socket === null || socket.current === null) return;
+    if (socket.current === null) return;
 
     const handler = (currentUsers: Array<string>) => {
       setCurrentUsers(new Set<string>(currentUsers));
@@ -174,7 +175,7 @@ export const EditorProvider = ({ children }: EditorProviderInterface) => {
       socket.current.off('participant-update', handler);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [socket.current]);
 
   return (
     <EditorContext.Provider
