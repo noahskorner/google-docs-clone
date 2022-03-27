@@ -35,17 +35,17 @@ const DocumentEditor = () => {
     setEditorState(editorState);
 
     const content = convertToRaw(editorState.getCurrentContent());
-    if (document === null || JSON.stringify(content) === document.content)
-      return;
-
-    setSaving(true);
-
     socket.current.emit('send-changes', content);
     const updatedDocument = {
       ...document,
       content: JSON.stringify(content),
     } as DocumentInterface;
     setDocument(updatedDocument);
+
+    if (document === null || JSON.stringify(content) === document.content)
+      return;
+
+    setSaving(true);
 
     if (saveInterval !== null) {
       clearInterval(saveInterval);
@@ -77,8 +77,7 @@ const DocumentEditor = () => {
 
   // connect
   useEffect(() => {
-    if (document === null || accessToken === null || socket.current !== null)
-      return;
+    if (document === null || accessToken === null) return;
 
     socket.current = io(BASE_URL, {
       query: { documentId: document.id, accessToken },
@@ -88,7 +87,7 @@ const DocumentEditor = () => {
       socket.current.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [document, accessToken]);
+  }, []);
 
   // receive-changes
   useEffect(() => {
