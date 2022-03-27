@@ -1,4 +1,3 @@
-import axios, { AxiosError } from 'axios';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/auth-context';
 import AuthService from '../services/auth-service';
@@ -13,11 +12,9 @@ const useAuth = () => {
     isAuthenticated,
     setIsAuthenticated,
     loading,
-    setLoading,
     loadingAuth,
     setLoadingAuth,
     errors,
-    setErrors,
     userId,
     setUserId,
     email,
@@ -28,23 +25,14 @@ const useAuth = () => {
     null
   );
 
-  const login = async (email: string, password: string) => {
-    setLoading(true);
-    try {
-      const response = await AuthService.login({ email, password });
-      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-        response.data;
-      setAuth(newAccessToken, newRefreshToken);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const { response } = error as AxiosError;
-        setErrors([response?.data?.errors?.[0].msg]);
-      } else {
-        setErrors(['An unknown error has occured. Please try again.']);
-      }
-    } finally {
-      setLoading(false);
-    }
+  const login = (accessToken: string, refreshToken: string) => {
+    const { exp, id, email } = jwt_decode<Token>(accessToken);
+    silentRefresh(exp);
+    setUserId(id);
+    setEmail(email);
+    setAccessToken(accessToken);
+    setRefreshToken(refreshToken);
+    setIsAuthenticated(true);
   };
 
   const refreshAccessToken = async () => {
@@ -57,7 +45,7 @@ const useAuth = () => {
       const response = await AuthService.refreshToken({ token: refreshToken });
       const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
         response.data;
-      setAuth(newAccessToken, newRefreshToken);
+      login(newAccessToken, newRefreshToken);
     } catch (error) {
       destroyAuth();
     } finally {
@@ -82,16 +70,6 @@ const useAuth = () => {
     setTimeout(() => {
       refreshAccessToken();
     }, msExpiration);
-  };
-
-  const setAuth = (accessToken: string, refreshToken: string) => {
-    const { exp, id, email } = jwt_decode<Token>(accessToken);
-    silentRefresh(exp);
-    setUserId(id);
-    setEmail(email);
-    setAccessToken(accessToken);
-    setRefreshToken(refreshToken);
-    setIsAuthenticated(true);
   };
 
   const destroyAuth = () => {

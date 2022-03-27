@@ -1,11 +1,10 @@
 import dotenv from 'dotenv';
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 import { Server } from 'socket.io';
 import jwt, { VerifyErrors } from 'jsonwebtoken';
 import http from 'http';
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
-
-import app from './app';
 import env from './config/env.config';
+import app from './app';
 import documentService from './services/document.service';
 import SocketEvent from './types/enums/socket-events-enum';
 
@@ -13,7 +12,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: env.FRONT_END_URL,
     methods: '*',
   },
 });

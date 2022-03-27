@@ -7,6 +7,8 @@ import validator from 'validator';
 import Spinner from '../../components/atoms/spinner';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/use-auth';
+import AuthService from '../../services/auth-service';
+import axios from 'axios';
 
 const Login = () => {
   const { widthStr, heightStr } = useWindowSize();
@@ -14,9 +16,10 @@ const Login = () => {
   const [emailErrors, setEmailErrors] = useState<Array<string>>([]);
   const [password, setPassword] = useState('');
   const [passwordErrors, setPasswordErrors] = useState<Array<string>>([]);
-  const { loading, errors, login } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const { success, error } = useContext(ToastContext);
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     setEmailErrors([]);
@@ -38,17 +41,23 @@ const Login = () => {
   const loginUser = async () => {
     if (!validate()) return;
 
-    await login(email, password);
-
-    if (errors.length) {
-      errors.forEach((err) => {
-        error(err);
-      });
-      setEmailErrors(['']);
-      setPasswordErrors(['']);
-    } else {
+    setLoading(true);
+    try {
+      const response = await AuthService.login({ email, password });
+      const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+        response.data;
+      login(newAccessToken, newRefreshToken);
       success('Successfully logged in!');
       navigate('/document/create');
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        // const { response } = error as AxiosError;
+        error('Incorrect username or password.');
+      } else {
+        error('An unknown error has occured. Please try again.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 

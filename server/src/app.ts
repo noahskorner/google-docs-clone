@@ -3,13 +3,14 @@ import cors from 'cors';
 import db from './db/models';
 import router from './routes';
 import errorHandler from './middleware/error-handler';
+import env from './config/env.config';
 
 // MIDDLEWARE
 const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ['http://localhost:3000'],
+    origin: [env.FRONT_END_URL],
   })
 );
 app.use(router);
