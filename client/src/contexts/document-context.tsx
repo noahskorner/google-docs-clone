@@ -1,5 +1,15 @@
-import { createContext, SetStateAction, useState, Dispatch } from 'react';
+import {
+  createContext,
+  SetStateAction,
+  useState,
+  Dispatch,
+  useEffect,
+  useContext,
+} from 'react';
+import useAuth from '../hooks/use-auth';
+import DocumentService from '../services/document-service';
 import DocumentInterface from '../types/interfaces/document';
+import { ToastContext } from './toast-context';
 
 interface DocumentContextInterface {
   document: DocumentInterface | null;
@@ -12,6 +22,8 @@ interface DocumentContextInterface {
   setSaving: Dispatch<SetStateAction<boolean>>;
   currentUsers: Set<string>;
   setCurrentUsers: Dispatch<SetStateAction<Set<string>>>;
+  setDocumentTitle: (title: string) => void;
+  saveDocument: (updatedDocument: DocumentInterface) => Promise<void>;
 }
 
 const defaultValues = {
@@ -25,6 +37,8 @@ const defaultValues = {
   setSaving: () => {},
   currentUsers: new Set<string>(),
   setCurrentUsers: () => {},
+  setDocumentTitle: () => {},
+  saveDocument: async () => {},
 };
 
 export const DocumentContext =
@@ -35,6 +49,8 @@ interface DocumentProviderInterface {
 }
 
 export const DocumentProvider = ({ children }: DocumentProviderInterface) => {
+  const toastContext = useContext(ToastContext);
+  const { accessToken } = useAuth();
   const [document, setDocument] = useState<null | DocumentInterface>(
     defaultValues.document
   );
@@ -43,19 +59,49 @@ export const DocumentProvider = ({ children }: DocumentProviderInterface) => {
   const [saving, setSaving] = useState(defaultValues.saving);
   const [currentUsers, setCurrentUsers] = useState(defaultValues.currentUsers);
 
+  const setDocumentTitle = (title: string) => {
+    setDocument({ ...document, title } as DocumentInterface);
+  };
+
+  const saveDocument = async (updatedDocument: DocumentInterface) => {
+    if (accessToken === null) return;
+
+    setSaving(true);
+
+    try {
+      await DocumentService.update(accessToken, updatedDocument);
+      setDocument(updatedDocument);
+    } catch (error) {
+      setErrors(['There was an error saving the document. Please try again.']);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  useEffect(() => {
+    if (errors.length) {
+      errors.forEach((error) => {
+        toastContext?.error(error);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errors]);
+
   return (
     <DocumentContext.Provider
       value={{
         document,
-        setDocument,
         errors,
-        setErrors,
         loading,
-        setLoading,
         saving,
-        setSaving,
         currentUsers,
+        setDocument,
+        setErrors,
+        setLoading,
+        setSaving,
         setCurrentUsers,
+        setDocumentTitle,
+        saveDocument,
       }}
     >
       {children}

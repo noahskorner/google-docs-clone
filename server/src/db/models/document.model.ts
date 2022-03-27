@@ -7,6 +7,7 @@ import {
   BelongsTo,
   HasMany,
   DefaultScope,
+  Default,
 } from 'sequelize-typescript';
 import { DocumentUser } from './document-user.model';
 import { User } from './user.model';
@@ -43,8 +44,9 @@ class Document extends Model {
   })
   users!: Array<DocumentUser>;
 
+  @Default(false)
   @Column(DataType.BOOLEAN)
-  isPublic: boolean = false;
+  isPublic!: boolean;
 }
 
 export { Document };

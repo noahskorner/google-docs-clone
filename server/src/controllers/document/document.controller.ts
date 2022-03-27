@@ -70,7 +70,7 @@ class DocumentController {
     if (content !== undefined && content !== null) document.content = content;
     if (isPublic !== undefined && isPublic !== null)
       document.isPublic = isPublic;
-    document.save();
+    await document.save();
 
     return res.sendStatus(200);
   });

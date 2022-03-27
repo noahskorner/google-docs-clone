@@ -1,24 +1,16 @@
 import axios, { AxiosError } from 'axios';
-import { useContext, useEffect } from 'react';
-import { DocumentContext } from '../contexts/document-context';
+import { useContext, useEffect, useState } from 'react';
+import { ToastContext } from '../contexts/toast-context';
 import DocumentService from '../services/document-service';
 import DocumentInterface from '../types/interfaces/document';
 import useAuth from './use-auth';
 
-const useDocument = () => {
+const useDocument = (documentId: number) => {
   const { accessToken } = useAuth();
-  const {
-    document,
-    setDocument,
-    loading,
-    setLoading,
-    saving,
-    setSaving,
-    errors,
-    setErrors,
-    currentUsers,
-    setCurrentUsers,
-  } = useContext(DocumentContext);
+  const toastContext = useContext(ToastContext);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Array<string>>([]);
+  const [document, setDocument] = useState<null | DocumentInterface>(null);
 
   const loadDocument = async (accessToken: string, documentId: number) => {
     setLoading(true);
@@ -48,72 +40,25 @@ const useDocument = () => {
     }
   };
 
-  const saveDocument = async () => {
-    if (accessToken === null || document === null) return;
+  useEffect(() => {
+    if (accessToken === null) return;
 
-    setSaving(true);
+    loadDocument(accessToken, documentId);
+  }, [accessToken, documentId]);
 
-    try {
-      await DocumentService.update(accessToken, document);
-    } catch (error: any) {
-      setErrors((prev) => [
-        ...prev,
-        'An unknown error has occurred. Please try again.',
-      ]);
-    } finally {
-      setSaving(false);
+  useEffect(() => {
+    if (errors.length) {
+      errors.forEach((error) => {
+        toastContext?.error(error);
+      });
     }
-  };
-
-  // const shareDocument = async (
-  //   id: number,
-  //   email: string,
-  //   callback: (error: null | string) => void
-  // ) => {
-  //   if (!authContext?.accessToken) return;
-
-  //   setLoading(true);
-  //   try {
-  //     await API.createDocumentUser(authContext?.accessToken, {
-  //       id,
-  //       email,
-  //       permission: PermissionEnum.EDIT,
-  //     });
-  //     callback(null);
-  //   } catch (error: any) {
-  //     if (axios.isAxiosError(error)) {
-  //       const { response } = error as AxiosError;
-  //       if (response?.status === 401) {
-  //         callback(response?.data?.errors?.[0].msg);
-  //       } else {
-  //         callback('An unknown error has occured. Please try again.');
-  //       }
-  //     } else {
-  //       callback('An unknown error has occured. Please try again.');
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-
-  //   return;
-  // };
-
-  const setDocumentTitle = (title: string) => {
-    setDocument({ ...document, title } as DocumentInterface);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [errors]);
 
   return {
     document,
-    loading,
     errors,
-    saving,
-    currentUsers,
-    loadDocument,
-    saveDocument,
-    setDocument,
-    setDocumentTitle,
-    setCurrentUsers,
-    setSaving,
+    loading,
   };
 };
 

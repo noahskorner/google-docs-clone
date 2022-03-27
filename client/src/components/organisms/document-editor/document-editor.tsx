@@ -7,9 +7,9 @@ import {
 } from 'draft-js';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
+import { DocumentContext } from '../../../contexts/document-context';
 import { ToastContext } from '../../../contexts/toast-context';
 import useAuth from '../../../hooks/use-auth';
-import useDocument from '../../../hooks/use-document';
 import { BASE_URL } from '../../../services/api';
 import DocumentInterface from '../../../types/interfaces/document';
 
@@ -23,14 +23,8 @@ const DocumentEditor = () => {
   const [documentRendered, setDocumentRendered] = useState(false);
   const editorRef = useRef<null | Editor>(null);
   const { accessToken } = useAuth();
-  const {
-    document,
-    errors,
-    setCurrentUsers,
-    setSaving,
-    setDocument,
-    saveDocument,
-  } = useDocument();
+  const { document, setCurrentUsers, setSaving, setDocument, saveDocument } =
+    useContext(DocumentContext);
 
   const focusEditor = () => {
     editorRef?.current?.focus();
@@ -38,35 +32,34 @@ const DocumentEditor = () => {
 
   // send-changes
   const handleEditorChange = (editorState: EditorState) => {
+    setEditorState(editorState);
+
+    const content = convertToRaw(editorState.getCurrentContent());
+    if (document === null || JSON.stringify(content) === document.content)
+      return;
+
     setSaving(true);
 
-    setEditorState(editorState);
-    const content = convertToRaw(editorState.getCurrentContent());
     socket.current.emit('send-changes', content);
-    setDocument({
+    const updatedDocument = {
       ...document,
       content: JSON.stringify(content),
-    } as DocumentInterface);
+    } as DocumentInterface;
+    setDocument(updatedDocument);
 
     if (saveInterval !== null) {
       clearInterval(saveInterval);
     }
     saveInterval = setInterval(async () => {
-      if (document === null) return;
-
-      await saveDocument();
-
-      if (errors)
-        errors.forEach((error) => {
-          toastContext?.error(error);
-        });
+      await saveDocument(updatedDocument);
       if (saveInterval) clearInterval(saveInterval);
     }, DEFAULT_SAVE_TIME);
   };
 
   // set document content
   useEffect(() => {
-    if (documentRendered || document?.content === undefined) return;
+    if (documentRendered || document === null || document.content === null)
+      return;
 
     try {
       const contentState = convertFromRaw(
@@ -84,26 +77,22 @@ const DocumentEditor = () => {
 
   // connect
   useEffect(() => {
-    if (
-      document?.id === null ||
-      accessToken === null ||
-      socket.current !== null
-    )
+    if (document === null || accessToken === null || socket.current !== null)
       return;
 
     socket.current = io(BASE_URL, {
-      query: { documentId: document?.id, accessToken },
+      query: { documentId: document.id, accessToken },
     }).connect();
 
     return () => {
       socket.current.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [document?.id, accessToken]);
+  }, [document, accessToken]);
 
   // receive-changes
   useEffect(() => {
-    if (socket == null) return;
+    if (socket.current === null) return;
 
     const handler = (rawDraftContentState: RawDraftContentState) => {
       const contentState = convertFromRaw(rawDraftContentState);
@@ -121,7 +110,7 @@ const DocumentEditor = () => {
 
   // participant-update
   useEffect(() => {
-    if (socket == null) return;
+    if (socket.current === null) return;
 
     const handler = (currentUsers: Array<string>) => {
       setCurrentUsers(new Set<string>(currentUsers));

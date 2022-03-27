@@ -25,8 +25,7 @@ io.on('connection', (socket) => {
   const accessToken = socket.handshake.query.accessToken as string | undefined;
   const documentId = socket.handshake.query.documentId as string | undefined;
 
-  if (accessToken === undefined || documentId === undefined)
-    return socket.disconnect();
+  if (!accessToken || !documentId) return socket.disconnect();
   else {
     jwt.verify(
       accessToken,
@@ -68,6 +67,10 @@ io.on('connection', (socket) => {
                   );
                 });
             });
+          })
+          .catch((error) => {
+            console.log(error);
+            return socket.disconnect();
           });
       }
     );

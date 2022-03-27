@@ -19,7 +19,9 @@ const AuthService = {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
   },
-  // verifyEmail
+  verifyEmail: (token: string) => {
+    return API.put(`user/verify-email/${token}`);
+  },
 };
 
 export default AuthService;

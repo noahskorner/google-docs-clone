@@ -1,5 +1,5 @@
-import { useContext } from 'react';
-import { AuthContext } from '../../../contexts/auth-context';
+import useAuth from '../../../hooks/use-auth';
+import useRandomBackground from '../../../hooks/use-random-background';
 import DocumentUser from '../../../types/interfaces/document-user';
 
 interface SharedUsersProps {
@@ -7,18 +7,20 @@ interface SharedUsersProps {
 }
 
 const SharedUsers = ({ documentUsers }: SharedUsersProps) => {
-  const authContext = useContext(AuthContext);
+  const { backgroundColor } = useRandomBackground();
+  const { backgroundColor: sharedUserBackgroundColor } = useRandomBackground();
+  const { email } = useAuth();
 
   return (
     <div>
       <div className="px-2 py-4 w-full flex items-center justify-between hover:bg-gray-100 rounded-md">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 flex justify-center items-center text-white bg-green-800 uppercase rounded-full text-xl font-medium">
-            {authContext?.email && authContext?.email[0]}
+          <div
+            className={`${backgroundColor} w-8 h-8 flex justify-center items-center text-white uppercase rounded-full text-xl font-medium`}
+          >
+            {email !== null && email[0]}
           </div>
-          <p className="font-medium">
-            {authContext?.email && authContext?.email} (you)
-          </p>
+          <p className="font-medium">{email !== null && email} (you)</p>
         </div>
         <p className="text-gray-500 italic">Owner</p>
       </div>
@@ -29,7 +31,9 @@ const SharedUsers = ({ documentUsers }: SharedUsersProps) => {
             className="px-2 py-4 w-full flex items-center justify-between hover:bg-gray-100 rounded-md"
           >
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 flex justify-center items-center text-white bg-teal-500 uppercase rounded-full text-xl font-medium">
+              <div
+                className={`${sharedUserBackgroundColor} w-8 h-8 flex justify-center items-center text-white uppercase rounded-full text-xl font-medium`}
+              >
                 {documentUser.user.email[0]}
               </div>
               <p className="font-medium">{documentUser.user.email}</p>
