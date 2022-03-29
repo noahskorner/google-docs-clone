@@ -3,16 +3,20 @@
 Built with React, Typescript, TailwindCSS, ExpressJS, Postgres, and Socket.IO
 [Check it out!](https://docs.noahgothacked.com)
 
+### API Documentation
+
+[View it here!](https://documenter.getpostman.com/view/12120504/UVyoWHgt)
+
 ## Project Screen Shot(s)
 
 - Full Register/Login/Verify Email functionality, with helpful toast notifications to guide you.
-  [Authentication](client/screenshots/authentication.png)
+  ![Authentication](client/screenshots/authentication.png)
 
 - Basic document dashboard to create new documents, and navigate to your recent or shared documents.
-  [Dashboard](client/screenshots/home.png)
+  ![Dashboard](client/screenshots/home.png)
 
 - Real time collaboration. Work on documents at the same time with those you've shared the document with.
-  [Collaboration](client/screenshots/collaboration.png)
+  ![Collaboration](client/screenshots/collaboration.png)
 
 ## Installation and Setup Instructions
 
