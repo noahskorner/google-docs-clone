@@ -149,7 +149,7 @@ class UserService {
       from: 'noahskorner@gmail.com',
       to: user.email,
       subject: 'Welcome to Docs!',
-      text: `${env.FRONT_END_URL}/user/verify-email/${user.verificationToken}`,
+      text: `Click the following link to verify your email: ${env.FRONT_END_URL}/user/verify-email/${user.verificationToken}`,
     };
 
     await mailService.sendMail(mail);
