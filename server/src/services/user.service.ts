@@ -148,7 +148,7 @@ class UserService {
     const mail = {
       from: 'noahskorner@gmail.com',
       to: user.email,
-      subject: 'Welcome to typescript-template!',
+      subject: 'Welcome to Docs!',
       text: `${env.FRONT_END_URL}/user/verify-email/${user.verificationToken}`,
     };
 
