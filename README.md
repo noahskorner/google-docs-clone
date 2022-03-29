@@ -1,7 +1,7 @@
 ## Google Docs Clone
 
 Built with React, Typescript, TailwindCSS, ExpressJS, Postgres, and Socket.IO
-[Check it out!](https://docs.noahgothacked.com)
+[Check it out here!](https://docs.noahgothacked.com)
 
 ### API Documentation
 
@@ -10,12 +10,18 @@ Built with React, Typescript, TailwindCSS, ExpressJS, Postgres, and Socket.IO
 ## Project Screen Shot(s)
 
 - Full Register/Login/Verify Email functionality, with helpful toast notifications to guide you.
+
+
   ![Authentication](client/screenshots/authentication.png)
 
 - Basic document dashboard to create new documents, and navigate to your recent or shared documents.
+
+
   ![Dashboard](client/screenshots/home.png)
 
 - Real time collaboration. Work on documents at the same time with those you've shared the document with.
+
+
   ![Collaboration](client/screenshots/collaboration.png)
 
 ## Installation and Setup Instructions
