@@ -1,6 +1,6 @@
 import { createContext, Dispatch, SetStateAction, useState } from 'react';
 
-interface AuthInterface {
+interface AuthContextInterface {
   accessToken: string | null;
   setAccessToken: Dispatch<SetStateAction<string | null>>;
   isAuthenticated: boolean;
@@ -34,7 +34,7 @@ const defaultValues = {
   setEmail: () => {},
 };
 
-export const AuthContext = createContext<AuthInterface>(defaultValues);
+export const AuthContext = createContext<AuthContextInterface>(defaultValues);
 
 interface AuthProviderInterface {
   children: JSX.Element;

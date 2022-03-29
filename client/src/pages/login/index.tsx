@@ -8,7 +8,7 @@ import Spinner from '../../components/atoms/spinner';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/use-auth';
 import AuthService from '../../services/auth-service';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const Login = () => {
   const { widthStr, heightStr } = useWindowSize();
@@ -51,8 +51,12 @@ const Login = () => {
       navigate('/document/create');
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        // const { response } = error as AxiosError;
-        error('Incorrect username or password.');
+        const { response } = err as AxiosError;
+        if (response?.data.errors.length > 0) {
+          error(response?.data.errors[0].msg);
+        } else {
+          error('Incorrect username or password.');
+        }
       } else {
         error('An unknown error has occured. Please try again.');
       }
