@@ -46,7 +46,7 @@ Create the .env file in the root directory:
 
 `touch .env.development`
 
-You will need to add all of the neccessary environment variables in this file [located here](server/src/config/env.config.ts)
+You will need to add all of the neccessary environment variables [listed in this file](server/src/config/env.config.ts)
 
 Install Dependencies:
 
